@@ -1,4 +1,4 @@
-# Mirror | Super Harmonização IA ✦
+# Campanha Dove 2026 | Mirror ✦
 
 O **Mirror** é um projeto educacional e artístico que utiliza Inteligência Artificial (processada 100% localmente no navegador) para provocar reflexões sobre padrões de beleza, identidade e a cultura dos filtros em redes sociais.
 
