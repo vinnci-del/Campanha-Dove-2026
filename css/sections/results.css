@@ -1,0 +1,155 @@
+.result-section {
+    display: none;
+    padding-bottom: 60px;
+}
+
+.result-heading {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.result-heading h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.result-heading p {
+    color: var(--secondary);
+    font-size: 14px;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.comparison-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.comparison-card h3 {
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+}
+
+.comparison-card .card-desc {
+    font-size: 12px;
+    color: var(--secondary);
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
+.card-cold {
+    border-color: rgba(74, 158, 255, 0.2);
+    background: linear-gradient(180deg, rgba(74, 158, 255, 0.04) 0%, transparent 100%);
+}
+
+.card-cold h3 {
+    color: var(--cold);
+}
+
+.card-cold:hover {
+    box-shadow: 0 0 40px var(--cold-glow);
+    border-color: rgba(74, 158, 255, 0.4);
+}
+
+.card-original {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.card-original h3 {
+    color: var(--primary);
+}
+
+.result-img-box {
+    width: 100%;
+    aspect-ratio: 4/5;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.result-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.reflection {
+    text-align: center;
+    padding: 60px 20px 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease forwards;
+    animation-delay: 0.5s;
+}
+
+.reflection h2 {
+    font-size: 36px;
+    margin-bottom: 12px;
+    background: linear-gradient(90deg, var(--cold), #fff, var(--warm));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.reflection p {
+    font-size: 16px;
+    color: var(--secondary);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.disclaimer-bar {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 1.5;
+}
+
+.delete-link {
+    color: var(--warm);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font-size: 12px;
+    font-family: var(--font-body);
+    margin-top: 6px;
+    display: inline-block;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 900px) {
+    .comparison-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .card-original {
+        transform: none;
+        order: -1;
+    }
+
+    .reflection h2 {
+        font-size: 26px;
+    }
+}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror | Sua imagem. O que a IA acha dela.</title>
+    <meta name="description"
+        content="Envie uma foto. Receba duas versões: uma otimizada por algoritmos e outra descrita com carinho. Compare e reflita sobre padrões de beleza.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap"
+        rel="stylesheet">
+    <!-- Estilos em Blocos -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/sections/hero.css">
+    <link rel="stylesheet" href="css/sections/upload.css">
+    <link rel="stylesheet" href="css/sections/results.css">
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <!-- Consent Modal -->
+    <div id="consent-overlay" class="consent-overlay">
+        <div class="consent-box">
+            <h2>Antes de continuar</h2>
+            <p>Ao enviar a foto, você autoriza a geração de imagens para fins educacionais e de reflexão. Nenhuma imagem
+                será armazenada ou usada comercialmente.</p>
+            <p>Esta ferramenta cria imagens geradas por IA com objetivo educativo. Todo o processamento acontece
+                localmente no seu navegador.</p>
+            <div class="warning">⚠ Se sentir desconforto, cancele a qualquer momento.</div>
+            <div class="consent-actions">
+                <button id="consent-cancel" class="btn btn-secondary">Cancelar</button>
+                <button id="consent-accept" class="btn btn-primary">Aceitar e Gerar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo-container">
+                <img src="assets/mirror_logo.png" alt="Mirror Logo">
+                <span>Mirror</span>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <h1>Sua imagem.<br>Super Harmonização.</h1>
+            <p class="subtitle">Ajuste o foco no rosto e veja a IA aplicar uma super harmonização exagerada e lúdica.
+                Compare sua essência real com a perfeição artificial.</p>
+            <p class="explain">Um projeto educacional sobre padrões de beleza, identidade e o impacto da inteligência
+                artificial na nossa autopercepção.</p>
+        </section>
+
+        <main>
+            <div id="drop-zone" class="mirror-box">
+                <div id="upload-prompt" class="upload-content">
+                    <div class="upload-icon">✦</div>
+                    <p>Arraste uma foto ou clique para escolher</p>
+                    <p style="font-size: 13px; margin-top: 10px; color: rgba(255,255,255,0.25);">PNG ou JPG até 10MB</p>
+                </div>
+
+                <div id="preview-container" class="preview-container">
+                    <img id="preview-img" class="preview-img" src="" alt="Sua foto">
+
+                    <!-- Toolbar de Edição Profissional -->
+                    <div class="edit-toolbar">
+                        <button type="button" class="tool-btn" id="crop-zoom-in" title="Zoom In"><i
+                                data-lucide="zoom-in"></i></button>
+                        <button type="button" class="tool-btn" id="crop-zoom-out" title="Zoom Out"><i
+                                data-lucide="zoom-out"></i></button>
+                        <button type="button" class="tool-btn" id="crop-rotate-l" title="Girar Esquerda"><i
+                                data-lucide="rotate-ccw"></i></button>
+                        <button type="button" class="tool-btn" id="crop-rotate-r" title="Girar Direita"><i
+                                data-lucide="rotate-cw"></i></button>
+                        <button type="button" class="tool-btn" id="crop-reset" title="Resetar"><i
+                                data-lucide="refresh-cw"></i></button>
+                    </div>
+
+                    <div id="scan-line" class="scan-line"></div>
+                </div>
+
+                <input type="file" id="file-input" hidden accept="image/png,image/jpeg">
+            </div>
+
+            <div class="controls">
+                <button id="generate-btn" class="btn btn-primary" disabled>GERAR VERSÕES</button>
+                <button id="reset-btn" class="btn btn-secondary" style="display: none;">REFAZER</button>
+                <button id="sample-btn" class="btn btn-secondary btn-demo">VER DEMONSTRAÇÃO</button>
+            </div>
+
+            <div id="status-msg" class="status-msg"></div>
+
+            <section id="result-section" class="result-section">
+                <div class="result-heading">
+                    <h2>As versões da sua imagem</h2>
+                    <p>Processamento 100% local — nenhum dado é enviado a servidores.</p>
+                </div>
+
+                <div class="comparison-grid">
+                    <!-- Card 1: Original (Left) -->
+                    <div class="comparison-card card-original">
+                        <h3>Sua foto original</h3>
+                        <p class="card-desc">O rosto real, com todas as suas características únicas.</p>
+                        <div class="result-img-box">
+                            <img id="result-original" class="result-img" src="" alt="Original">
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Super Harmonizada (Right) -->
+                    <div class="comparison-card card-cold">
+                        <h3>Super Harmonização IA</h3>
+                        <p class="card-desc">Padrão digital extremo: simetria absoluta e pele irreal.</p>
+                        <div class="result-img-box">
+                            <img id="result-algo" class="result-img" src="" alt="Versão Harmonizada">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="reflection" class="reflection">
+                    <h2>A perfeição é uma ilusão?</h2>
+                    <p>Compare sua identidade real com a padronização lúdica e exagerada das redes sociais.</p>
+                </div>
+            </section>
+
+            <div class="disclaimer-bar">
+                <p>Imagens geradas com IA para fins educativos. Todo processamento é local. Pode remover seus dados a
+                    qualquer momento.</p>
+                <button id="delete-data" class="delete-link">Excluir minhas imagens</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Mirror — Projeto Educacional sobre Beleza e Identidade</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smartcrop/2.1.0/smartcrop.min.js"></script>
+    <script src="sample_data.js"></script>
+    <script src="js/elements.js"></script>
+    <script src="js/processor.js"></script>
+    <script src="js/handlers.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

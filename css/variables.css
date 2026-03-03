@@ -1,0 +1,16 @@
+:root {
+    --primary: #ffffff;
+    --secondary: #a1a1a1;
+    --accent: #0076ff;
+    --bg: #050505;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --cold: #4a9eff;
+    --cold-glow: rgba(74, 158, 255, 0.15);
+    --warm: #ffb347;
+    --warm-glow: rgba(255, 179, 71, 0.15);
+    --font-main: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
