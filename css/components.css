@@ -1,9 +1,8 @@
 /* Buttons */
 .btn {
-    padding: 16px 32px;
+    padding: clamp(12px, 2vw, 16px) clamp(20px, 4vw, 32px);
     border-radius: 4px;
-    /* Dove uses more rectangular or slightly rounded buttons */
-    font-size: 14px;
+    font-size: clamp(12px, 1.5vw, 14px);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -14,7 +13,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 200px;
+    min-width: clamp(140px, 30vw, 200px);
     text-align: center;
 }
 
@@ -59,6 +58,7 @@
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 .consent-overlay.active {
@@ -70,21 +70,21 @@
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow);
     border-radius: 8px;
-    padding: 60px 40px;
+    padding: clamp(40px, 6vw, 60px) clamp(24px, 5vw, 40px);
     max-width: 580px;
-    width: 90%;
+    width: 100%;
     text-align: center;
 }
 
 .consent-box h2 {
     font-family: var(--font-main);
-    font-size: 32px;
+    font-size: clamp(24px, 4vw, 32px);
     color: var(--primary);
-    margin-bottom: 24px;
+    margin-bottom: clamp(16px, 3vw, 24px);
 }
 
 .consent-box p {
-    font-size: 16px;
+    font-size: clamp(14px, 2vw, 16px);
     color: var(--secondary);
     line-height: 1.8;
     margin-bottom: 20px;
@@ -92,7 +92,7 @@
 
 .consent-box .warning {
     color: var(--accent);
-    font-size: 14px;
+    font-size: clamp(13px, 1.5vw, 14px);
     font-weight: 600;
     margin-bottom: 30px;
 }
@@ -101,4 +101,17 @@
     display: flex;
     gap: 16px;
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+    .btn {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .consent-actions {
+        flex-direction: column;
+        width: 100%;
+    }
 }

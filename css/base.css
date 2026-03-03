@@ -46,22 +46,14 @@ nav {
 
 .logo-container {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
 }
 
-.logo-container img {
-    width: 45px;
+.org-logo {
+    max-width: 250px;
     height: auto;
-}
-
-.logo-container span {
-    font-family: var(--font-main);
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--primary);
+    width: 100%;
 }
 
 .controls {
@@ -84,5 +76,23 @@ footer {
 @media (max-width: 900px) {
     .container {
         padding: 0 20px;
+    }
+
+    .org-logo {
+        max-width: 200px;
+    }
+
+    nav {
+        padding: 24px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .org-logo {
+        max-width: 160px;
     }
 }
