@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Bootstrap Grid Framework (Adaptativo) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap-grid.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -105,23 +107,27 @@
                     <p>Compare sua beleza real com a padronização artificial gerada por IA.</p>
                 </div>
 
-                <div class="comparison-grid">
+                <div class="row comparison-grid">
                     <!-- Card 1: Original (Left) -->
-                    <div class="comparison-card card-original">
-                        <h3>Sua Identidade Real</h3>
-                        <p class="card-desc">As características que tornam você única e real.</p>
-                        <div class="result-img-box">
-                            <img id="result-original" class="result-img" src="" alt="Identidade Real">
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="comparison-card card-original">
+                            <h3>Sua Identidade Real</h3>
+                            <p class="card-desc">As características que tornam você única e real.</p>
+                            <div class="result-img-box">
+                                <img id="result-original" class="result-img" src="" alt="Identidade Real">
+                            </div>
                         </div>
                     </div>
 
                     <!-- Card 2: Super Harmonizada (Right) -->
-                    <div class="comparison-card card-cold">
-                        <h3>Padronização Artificial</h3>
-                        <p class="card-desc">O que os algoritmos consideram "perfeito": simetria irreal e pele sem
-                            textura.</p>
-                        <div class="result-img-box">
-                            <img id="result-algo" class="result-img" src="" alt="Distorção de IA">
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="comparison-card card-cold">
+                            <h3>Padronização Artificial</h3>
+                            <p class="card-desc">O que os algoritmos consideram "perfeito": simetria irreal e pele sem
+                                textura.</p>
+                            <div class="result-img-box">
+                                <img id="result-algo" class="result-img" src="" alt="Distorção de IA">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -134,7 +140,10 @@
 
             <div class="disclaimer-bar">
                 <p>Esta é uma iniciativa educacional. Todo processamento é 100% local e privado.</p>
-                <button id="delete-data" class="delete-link">Excluir e remover todas as imagens</button>
+                <div style="margin-top: 24px;">
+                    <button id="delete-data" class="btn btn-delete"><i data-lucide="trash-2"></i> Excluir e remover
+                        todas as imagens</button>
+                </div>
             </div>
         </main>
 

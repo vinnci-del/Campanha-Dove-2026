@@ -22,8 +22,6 @@
 }
 
 .comparison-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 40px;
     max-width: 1000px;
     margin: 0 auto;
@@ -132,7 +130,6 @@
 
 @media (max-width: 900px) {
     .comparison-grid {
-        grid-template-columns: 1fr;
         gap: 20px;
     }
 

@@ -45,6 +45,21 @@
     background: var(--bg-alt);
 }
 
+.btn-delete {
+    background: transparent;
+    color: #cc0000;
+    border: 1.5px solid #cc0000;
+    gap: 8px;
+    /* For the lucide icon */
+}
+
+.btn-delete:hover {
+    background: #cc0000;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(204, 0, 0, 0.2);
+}
+
 /* Modal / Consent Overlay */
 .consent-overlay {
     display: none;
