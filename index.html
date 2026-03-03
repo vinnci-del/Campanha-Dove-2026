@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mirror | Sua imagem. O que a IA acha dela.</title>
+    <title>Dove | Real Beauty vs AI</title>
     <meta name="description"
         content="Envie uma foto. Receba duas versões: uma otimizada por algoritmos e outra descrita com carinho. Compare e reflita sobre padrões de beleza.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
         rel="stylesheet">
     <!-- Estilos em Blocos -->
     <link rel="stylesheet" href="css/variables.css">
@@ -30,12 +31,13 @@
     <!-- Consent Modal -->
     <div id="consent-overlay" class="consent-overlay">
         <div class="consent-box">
-            <h2>Antes de continuar</h2>
-            <p>Ao enviar a foto, você autoriza a geração de imagens para fins educacionais e de reflexão. Nenhuma imagem
-                será armazenada ou usada comercialmente.</p>
-            <p>Esta ferramenta cria imagens geradas por IA com objetivo educativo. Todo o processamento acontece
-                localmente no seu navegador.</p>
-            <div class="warning">⚠ Se sentir desconforto, cancele a qualquer momento.</div>
+            <h2>Compromisso com a Beleza Real</h2>
+            <p>Este sistema utiliza inteligência artificial local para demonstrar como os algoritmos tentam padronizar
+                sua identidade. Suas imagens <strong>não são enviadas a servidores</strong> e ficam guardadas apenas no
+                seu navegador.</p>
+            <p>O objetivo é provocar reflexão sobre a valorização da sua essência natural frente aos filtros digitais.
+            </p>
+            <div class="warning">Sua privacidade e sua identidade são nossa prioridade.</div>
             <div class="consent-actions">
                 <button id="consent-cancel" class="btn btn-secondary">Cancelar</button>
                 <button id="consent-accept" class="btn btn-primary">Aceitar e Gerar</button>
@@ -46,17 +48,17 @@
     <div class="container">
         <nav>
             <div class="logo-container">
-                <img src="assets/mirror_logo.png" alt="Mirror Logo">
-                <span>Mirror</span>
+                <img src="assets/mirror_logo.png" alt="Real Beauty Logo">
+                <span>Real Beauty</span>
             </div>
         </nav>
 
         <section class="hero">
-            <h1>Sua imagem.<br>Super Harmonização.</h1>
-            <p class="subtitle">Ajuste o foco no rosto e veja a IA aplicar uma super harmonização exagerada e lúdica.
-                Compare sua essência real com a perfeição artificial.</p>
-            <p class="explain">Um projeto educacional sobre padrões de beleza, identidade e o impacto da inteligência
-                artificial na nossa autopercepção.</p>
+            <h1>Beleza Real.<br>Ou Perfeição IA?</h1>
+            <p class="subtitle">Veja como os algoritmos tentam padronizar sua essência.
+                Use o seletor para focar no rosto e compare sua identidade real com a harmonização artificial.</p>
+            <p class="explain">Uma iniciativa educacional pela valorização da beleza natural
+                frente ao impacto das distorções geradas por inteligência artificial.</p>
         </section>
 
         <main>
@@ -91,54 +93,54 @@
             </div>
 
             <div class="controls">
-                <button id="generate-btn" class="btn btn-primary" disabled>GERAR VERSÕES</button>
-                <button id="reset-btn" class="btn btn-secondary" style="display: none;">REFAZER</button>
-                <button id="sample-btn" class="btn btn-secondary btn-demo">VER DEMONSTRAÇÃO</button>
+                <button id="generate-btn" class="btn btn-primary" disabled>TESTAR REALIDADE IA</button>
+                <button id="reset-btn" class="btn btn-secondary" style="display: none;">MUDAR FOTO</button>
+                <button id="sample-btn" class="btn btn-secondary btn-demo">EXPERIMENTAR DEMO</button>
             </div>
 
             <div id="status-msg" class="status-msg"></div>
 
             <section id="result-section" class="result-section">
                 <div class="result-heading">
-                    <h2>As versões da sua imagem</h2>
-                    <p>Processamento 100% local — nenhum dado é enviado a servidores.</p>
+                    <h2>A beleza não precisa de filtros</h2>
+                    <p>Compare sua beleza real com a padronização artificial gerada por IA.</p>
                 </div>
 
                 <div class="comparison-grid">
                     <!-- Card 1: Original (Left) -->
                     <div class="comparison-card card-original">
-                        <h3>Sua foto original</h3>
-                        <p class="card-desc">O rosto real, com todas as suas características únicas.</p>
+                        <h3>Sua Identidade Real</h3>
+                        <p class="card-desc">As características que tornam você única e real.</p>
                         <div class="result-img-box">
-                            <img id="result-original" class="result-img" src="" alt="Original">
+                            <img id="result-original" class="result-img" src="" alt="Identidade Real">
                         </div>
                     </div>
 
                     <!-- Card 2: Super Harmonizada (Right) -->
                     <div class="comparison-card card-cold">
-                        <h3>Super Harmonização IA</h3>
-                        <p class="card-desc">Padrão digital extremo: simetria absoluta e pele irreal.</p>
+                        <h3>Padronização Artificial</h3>
+                        <p class="card-desc">O que os algoritmos consideram "perfeito": simetria irreal e pele sem
+                            textura.</p>
                         <div class="result-img-box">
-                            <img id="result-algo" class="result-img" src="" alt="Versão Harmonizada">
+                            <img id="result-algo" class="result-img" src="" alt="Distorção de IA">
                         </div>
                     </div>
                 </div>
 
                 <div id="reflection" class="reflection">
-                    <h2>A perfeição é uma ilusão?</h2>
-                    <p>Compare sua identidade real com a padronização lúdica e exagerada das redes sociais.</p>
+                    <h2>Sua beleza é única.</h2>
+                    <p>Não deixe que os algoritmos definam como você deve se ver. Reforce sua identidade real.</p>
                 </div>
             </section>
 
             <div class="disclaimer-bar">
-                <p>Imagens geradas com IA para fins educativos. Todo processamento é local. Pode remover seus dados a
-                    qualquer momento.</p>
-                <button id="delete-data" class="delete-link">Excluir minhas imagens</button>
+                <p>Esta é uma iniciativa educacional. Todo processamento é 100% local e privado.</p>
+                <button id="delete-data" class="delete-link">Excluir e remover todas as imagens</button>
             </div>
         </main>
 
         <footer>
-            <p>&copy; 2026 Mirror — Projeto Educacional sobre Beleza e Identidade</p>
+            <p>&copy; 2026 Campanha Dove | Projeto Real Beauty</p>
         </footer>
     </div>
 
