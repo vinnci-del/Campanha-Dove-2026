@@ -163,7 +163,7 @@ async function showResults() {
         await new Promise(r => setTimeout(r, 6000));
 
         // Mostrar o resultado demo fixo
-        elements.resultAlgo.src = 'assets/sample.png';
+        elements.resultAlgo.src = 'assets/ChatGPT Image 4 de mar. de 2026, 16_17_44.png';
         elements.resultAlgo.style.display = 'block';
 
         // Esconder placeholders com força total
