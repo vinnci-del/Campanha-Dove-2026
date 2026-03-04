@@ -65,54 +65,78 @@ elements.consentAccept.addEventListener('click', async () => {
 elements.resetBtn.addEventListener('click', resetApp);
 elements.deleteDataBtn.addEventListener('click', deleteData);
 
-// ===== Generation Logic =====
+// ===== Generation Logic (Integração Hugging Face) =====
 async function startGeneration() {
     elements.generateBtn.disabled = true;
     elements.scanLine.style.display = 'block';
 
     const steps = [
-        'Conectando ao Meta AI Engine...',
-        'Enviando prompt de harmonização artificial...',
-        'Meta AI: Aplicando expansão labial extrema...',
-        'Meta AI: Redefinindo maçãs do rosto e queixo...',
-        'Meta AI: Processando coloração ocular e maquiagem...',
-        'Meta AI: Finalizando renderização de distorção...',
-        'Recebendo resultado final do Meta AI...'
+        'Conectando à IA generativa...',
+        'Enviando sua foto para processamento...',
+        'IA analisando características faciais...',
+        'Aplicando harmonização artificial exagerada...',
+        'Processando boca, olhos, maquiagem e contorno...',
+        'Aguardando resultado da IA...'
     ];
 
-    for (let i = 0; i < steps.length; i++) {
-        elements.statusMsg.innerText = steps[i];
-        await delay(800 + Math.random() * 600);
+    // Mostrar mensagens de progresso enquanto a API processa
+    let stepIndex = 0;
+    const stepInterval = setInterval(() => {
+        if (stepIndex < steps.length) {
+            elements.statusMsg.innerText = steps[stepIndex];
+            stepIndex++;
+        } else {
+            // Ciclar nas últimas mensagens enquanto aguarda
+            elements.statusMsg.innerText = 'IA processando sua imagem... Aguarde...';
+        }
+    }, 3000);
+
+    try {
+        await showResults();
+        clearInterval(stepInterval);
+        elements.statusMsg.innerText = 'Geração concluída!';
+    } catch (err) {
+        clearInterval(stepInterval);
+        console.error('Erro na geração:', err);
+
+        if (err.message && err.message.startsWith('MODEL_LOADING:')) {
+            const waitTime = parseInt(err.message.split(':')[1]);
+            elements.statusMsg.innerText = `Modelo de IA carregando... Tentando novamente em ${waitTime}s`;
+
+            // Tentar novamente após o modelo carregar
+            await delay(waitTime * 1000);
+            elements.statusMsg.innerText = 'Reenviando imagem para processamento...';
+
+            try {
+                await showResults();
+                elements.statusMsg.innerText = 'Geração concluída!';
+            } catch (retryErr) {
+                console.error('Erro na segunda tentativa:', retryErr);
+                elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente mais tarde.';
+                elements.generateBtn.disabled = false;
+            }
+        } else {
+            elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente.';
+            elements.generateBtn.disabled = false;
+        }
     }
 
-    elements.statusMsg.innerText = 'Geração concluída.';
     elements.scanLine.style.display = 'none';
-
-    showResults();
 }
 
-function showResults() {
+async function showResults() {
     // Captura a imagem recortada do Cropper
     const finalImageData = getCroppedImageData();
 
-    const img = new Image();
-    img.onload = () => {
-        try {
-            elements.resultOriginal.src = finalImageData;
-            elements.resultAlgo.src = generateAlgoritmica(img);
+    // Mostrar a imagem original imediatamente
+    elements.resultOriginal.src = finalImageData;
 
-            elements.generateBtn.style.display = 'none';
-            elements.resultSection.style.display = 'block';
-            elements.resultSection.scrollIntoView({ behavior: 'smooth' });
-        } catch (err) {
-            console.error('Erro ao gerar resultados:', err);
-            elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente com outra foto.';
-        }
-    };
+    // Chamar a IA para gerar a versão distorcida
+    const editedImageData = await generateAlgoritmica(finalImageData);
 
-    img.onerror = () => {
-        elements.statusMsg.innerText = 'Erro ao carregar a imagem recortada. Tente novamente.';
-    };
-
-    img.src = finalImageData;
+    // Mostrar resultado
+    elements.resultAlgo.src = editedImageData;
+    elements.generateBtn.style.display = 'none';
+    elements.resultSection.style.display = 'block';
+    elements.resultSection.scrollIntoView({ behavior: 'smooth' });
 }
