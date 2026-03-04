@@ -100,8 +100,7 @@ function resetApp() {
     elements.resetBtn.style.display = 'none';
     elements.sampleBtn.style.display = 'inline-block';
 
-    // Reset results and hide section
-    elements.resultSection.style.setProperty('display', 'none', 'important');
+    // Reset results and keep section visible for placeholders
     elements.resultAlgo.src = '';
     elements.resultOriginal.src = '';
     elements.resultAlgo.style.display = 'none';
@@ -124,7 +123,7 @@ function deleteData() {
         cropper = null;
     }
 
-    elements.resultSection.style.setProperty('display', 'none', 'important');
+    // Mantém a seção de resultados e placeholders visíveis
     elements.resultAlgo.src = '';
     elements.resultOriginal.src = '';
     elements.resultAlgo.style.display = 'none';

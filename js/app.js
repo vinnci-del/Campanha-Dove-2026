@@ -258,10 +258,8 @@ function showMain() {
     if (elements.privacySection) elements.privacySection.style.display = 'none';
     elements.mainContent.style.display = 'block';
 
-    // Só mostra a seção de resultados se houver imagem ou processamento concluído
-    if (uploadedImage) {
-        elements.resultSection.style.setProperty('display', 'block', 'important');
-    }
+    // Garante que a seção de resultados, com placeholders, esteja sempre visível no experimento
+    elements.resultSection.style.setProperty('display', 'block', 'important');
 
     elements.heroTitleArea.style.display = 'block';
 
