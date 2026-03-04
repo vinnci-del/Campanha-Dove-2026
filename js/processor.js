@@ -42,28 +42,25 @@ async function generateAlgoritmica(imageDataUrl) {
         }
 
         const publicId = uploadData.public_id;
+        const version = uploadData.version;
         const baseUrl = `https://res.cloudinary.com/${CLOUDINARY_CONFIG.cloudName}/image/upload`;
 
         /**
-         * 2. APLICAR TRANSFORMACÕES DE IA (O "Trabalho Duro")
-         * e_gen_replace: Substitui partes da imagem usando IA Generativa
-         * e_beauty: Suaviza a pele e melhora traços faciais
-         * e_vies: Aumenta a vivacidade das cores
+         * 2. APLICAR TRANSFORMACÕES DE IA
+         * Simplificado para prompts mais diretos.
          */
         const transformations = [
-            'e_beauty', // IA: Suavização de pele profissional
-            'e_gen_replace:from_lips;to_extremely_large_plump_lips_with_filler', // IA: Redesenha os lábios
-            'e_gen_replace:from_eyes;to_vibrant_bright_blue_eyes', // IA: Muda a cor dos olhos
-            'e_gen_replace:from_cheeks;to_high_puffy_swollen_cheekbones', // IA: Harmonização facial
-            'q_auto', // Otimização de qualidade
-            'f_auto'  // Formato automático
+            'e_gen_replace:from_lips;to_big_plump_lips',
+            'e_gen_replace:from_eyes;to_bright_blue_eyes',
+            'e_gen_replace:from_skin;to_smooth_plastic_skin',
+            'q_auto',
+            'f_auto'
         ].join('/');
 
-        const finalUrl = `${baseUrl}/${transformations}/${publicId}`;
+        // Adicionando /v${version}/ para garantir que o Cloudinary encontre a imagem recém-subida
+        const finalUrl = `${baseUrl}/v${version}/${transformations}/${publicId}`;
 
-        console.log('IA Processando: ', finalUrl);
-
-        // Retornamos a URL. O navegador vai carregar a imagem já editada pela IA.
+        console.log('URL Final (IA):', finalUrl);
         return finalUrl;
 
     } catch (err) {

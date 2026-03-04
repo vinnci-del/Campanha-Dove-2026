@@ -162,9 +162,9 @@ async function showResults() {
     // Mostrar a imagem original imediatamente no card de comparação
     elements.resultOriginal.src = finalImageData;
 
-    // 2. Chamar a IA (Text-to-Image) e usar o Mapeamento Facial Híbrido
-    // A foto original vai como BASE, e os landmarks servem como "mapa de colagem"
-    const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
+    // 2. Chamar o motor de IA do Cloudinary (GenAI)
+    // Agora o Cloudinary detecta e edita os traços automaticamente
+    const editedImageData = await generateAlgoritmica(finalImageData);
 
     // Mostrar resultado final gerado pela IA
     elements.resultAlgo.src = editedImageData;
