@@ -5,99 +5,117 @@
 function generateAlgoritmica(img) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = img.width;
-    canvas.height = img.height;
+
+    // Trabalhar com uma resolução consistente para os cálculos de posição
+    canvas.width = 800;
+    canvas.height = 1000;
 
     const w = canvas.width;
     const h = canvas.height;
 
-    // 1. Fundo Base
-    ctx.drawImage(img, 0, 0);
+    // 1. Fundo Base (Redimensionado)
+    ctx.drawImage(img, 0, 0, w, h);
 
-    // 2. Ultra Suavização de Pele (Filtro 'Plástico')
+    // 2. Ultra Suavização de Pele (Efeito "Filtro de IA")
+    // Criamos uma camada de blur suave para dar aquele aspecto de pele perfeita/plastificada
+    const skinCanvas = document.createElement('canvas');
+    skinCanvas.width = w;
+    skinCanvas.height = h;
+    const sctx = skinCanvas.getContext('2d');
+    sctx.filter = 'blur(4px) saturate(1.2) brightness(1.05)';
+    sctx.drawImage(canvas, 0, 0);
+
+    ctx.globalAlpha = 0.6;
+    ctx.drawImage(skinCanvas, 0, 0);
     ctx.globalAlpha = 1.0;
-    ctx.filter = 'blur(1px) brightness(1.1) contrast(1.1) saturate(1.3)';
-    ctx.drawImage(img, 0, 0);
 
-    // 3. Simulação de "Distorções de Preenchimento" (Face Contouring com Gradientes)
-    // Maçãs do rosto (iluminação exagerada)
-    const cheekGlow = ctx.createRadialGradient(w * 0.5, h * 0.45, 0, w * 0.5, h * 0.45, w * 0.4);
-    cheekGlow.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-    cheekGlow.addColorStop(0.6, 'rgba(255, 200, 200, 0.1)');
-    cheekGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = cheekGlow;
-    ctx.fillRect(0, 0, w, h);
-
-    // 4. Maquiagem Pesada (Sombras e Batom)
-    // Sombra nos olhos (escuro)
-    ctx.fillStyle = 'rgba(40, 0, 60, 0.3)';
+    // 3. Olhos Azuis (Simulando lentes de contato)
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 100, 255, 0.25)';
+    ctx.filter = 'blur(2px)';
+    // Posições estimadas baseadas no crop centralizado
     ctx.beginPath();
-    ctx.ellipse(w * 0.35, h * 0.4, w * 0.1, h * 0.05, 0, 0, Math.PI * 2);
-    ctx.ellipse(w * 0.65, h * 0.4, w * 0.1, h * 0.05, 0, 0, Math.PI * 2);
+    ctx.arc(w * 0.36, h * 0.42, w * 0.035, 0, Math.PI * 2);
+    ctx.arc(w * 0.64, h * 0.42, w * 0.035, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
 
-    // Batom (vermelho vivo/exagerado)
-    ctx.fillStyle = 'rgba(255, 0, 50, 0.4)';
+    // 4. Maquiagem e Contorno (Maçãs e Queixo)
+    // Maçãs do rosto (Highlights exagerados)
+    const cheekHighlight = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.4);
+    cheekHighlight.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
+    cheekHighlight.addColorStop(0.5, 'rgba(255, 255, 255, 0.05)');
+    cheekHighlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    ctx.save();
+    ctx.translate(w * 0.25, h * 0.55); // Maçã esquerda
+    ctx.scale(1, 0.6);
+    ctx.fillStyle = cheekHighlight;
     ctx.beginPath();
-    ctx.ellipse(w * 0.5, h * 0.75, w * 0.15, h * 0.06, 0, 0, Math.PI * 2);
+    ctx.arc(0, 0, w * 0.15, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
 
-    // Olhos Azuis (Simulação de íris)
-    ctx.fillStyle = 'rgba(0, 150, 255, 0.4)';
+    ctx.save();
+    ctx.translate(w * 0.75, h * 0.55); // Maçã direita
+    ctx.scale(1, 0.6);
+    ctx.fillStyle = cheekHighlight;
     ctx.beginPath();
-    ctx.arc(w * 0.35, h * 0.4, w * 0.03, 0, Math.PI * 2);
-    ctx.arc(w * 0.65, h * 0.4, w * 0.03, 0, Math.PI * 2);
+    ctx.arc(0, 0, w * 0.15, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
 
-    // 5. Queixo Definido (Contorno inferior)
-    ctx.lineWidth = 15;
-    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+    // 5. Boca Grande (Batom e Volume)
+    ctx.save();
+    ctx.filter = 'blur(3px)';
+    ctx.fillStyle = 'rgba(210, 50, 80, 0.25)';
     ctx.beginPath();
-    ctx.moveTo(w * 0.2, h * 0.7);
-    ctx.quadraticCurveTo(w * 0.5, h * 0.95, w * 0.8, h * 0.7);
-    ctx.stroke();
+    ctx.ellipse(w * 0.5, h * 0.74, w * 0.18, h * 0.07, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
 
-    // 6. Aplicar Distorção Geométrica (Efeito Liquify)
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = w;
-    tempCanvas.height = h;
-    const tempCtx = tempCanvas.getContext('2d');
-    tempCtx.drawImage(canvas, 0, 0);
+    // 6. Aplicar Distorção (Liquify/Estiramento)
+    const distCanvas = document.createElement('canvas');
+    distCanvas.width = w;
+    distCanvas.height = h;
+    const dctx = distCanvas.getContext('2d');
+    dctx.drawImage(canvas, 0, 0);
 
     ctx.clearRect(0, 0, w, h);
 
-    // Distorção para alargar maçãs/boca (escala não-linear)
-    // Dividimos a imagem em faixas para esticar o centro
-    const sliceCount = 30;
-    const sliceH = h / sliceCount;
+    // Técnica de mesh distortion simplificada (fatiamento horizontal com escala variável)
+    const slices = 50;
+    const sliceH = h / slices;
 
-    for (let i = 0; i < sliceCount; i++) {
-        const sx = 0;
+    for (let i = 0; i < slices; i++) {
         const sy = i * sliceH;
-        const sWidth = w;
-        const sHeight = sliceH;
+        let scaleX = 1.0;
 
-        // Fator de escala horizontal baseado na altura (maior no meio e na boca)
-        let scale = 1.0;
-        const relativeY = sy / h;
-        if (relativeY > 0.35 && relativeY < 0.55) { // Maçãs
-            scale = 1.08;
-        } else if (relativeY > 0.65 && relativeY < 0.85) { // Boca
-            scale = 1.15;
+        const relY = sy / h;
+        // Distorção na área das maçãs
+        if (relY > 0.45 && relY < 0.65) {
+            const t = (relY - 0.45) / 0.2; // 0 a 1
+            scaleX = 1 + Math.sin(t * Math.PI) * 0.12;
+        }
+        // Distorção na área da boca
+        if (relY > 0.68 && relY < 0.85) {
+            const t = (relY - 0.68) / 0.17; // 0 a 1
+            scaleX = 1 + Math.sin(t * Math.PI) * 0.18;
         }
 
-        const dWidth = sWidth * scale;
-        const dx = (w - dWidth) / 2;
-        const dy = sy;
-        const dHeight = sHeight;
+        const sw = w;
+        const dw = w * scaleX;
+        const dx = (w - dw) / 2;
 
-        ctx.drawImage(tempCanvas, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        ctx.drawImage(distCanvas, 0, sy, sw, sliceH, dx, sy, dw, sliceH);
     }
 
-    // Filtro final de nitidez artificial
-    ctx.filter = 'contrast(1.2) brightness(1.05)';
-    ctx.globalAlpha = 0.2;
-    ctx.drawImage(tempCanvas, 0, 0);
+    // 7. Nitidez Artificial Final (Oversharpened look)
+    ctx.save();
+    ctx.filter = 'contrast(1.15) brightness(1.02)';
+    ctx.globalAlpha = 0.3;
+    ctx.drawImage(distCanvas, 0, 0);
+    ctx.restore();
 
-    return canvas.toDataURL('image/jpeg', 0.92);
+    return canvas.toDataURL('image/jpeg', 0.9);
 }
