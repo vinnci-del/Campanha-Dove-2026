@@ -116,20 +116,35 @@
                         <img id="preview-img" class="preview-img w-100 h-100 object-fit-cover" src="" alt="Sua foto">
 
                         <!-- Toolbar Profissional (Floating) -->
-                        <div class="edit-toolbar shadow-lg rounded-pill p-1 d-flex gap-1 position-absolute bottom-0 start-50 translate-middle-x mb-4 bg-white"
-                            style="z-index: 10;">
-                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-zoom-in"
-                                title="Zoom In"><i data-lucide="zoom-in"></i></button>
-                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-zoom-out"
-                                title="Zoom Out"><i data-lucide="zoom-out"></i></button>
-                            <div class="vr my-2 opacity-10"></div>
-                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-rotate-l"
-                                title="Girar Esquerda"><i data-lucide="rotate-ccw"></i></button>
-                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-rotate-r"
-                                title="Girar Direita"><i data-lucide="rotate-cw"></i></button>
-                            <div class="vr my-2 opacity-10"></div>
-                            <button type="button" class="tool-btn btn btn-link p-2 text-danger" id="crop-reset"
-                                title="Resetar"><i data-lucide="refresh-cw"></i></button>
+                        <div class="edit-toolbar shadow-lg rounded-pill px-3 py-2 d-flex align-items-center gap-3 position-absolute bottom-0 start-50 translate-middle-x mb-4 bg-white border"
+                            style="z-index: 10; min-width: 320px;">
+                            <div class="d-flex gap-1 align-items-center">
+                                <span class="small text-muted me-2"
+                                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Zoom</span>
+                                <button type="button" class="tool-btn btn btn-link p-2 text-primary border"
+                                    id="crop-zoom-in" title="Zoom In"><i data-lucide="zoom-in"
+                                        style="width: 18px;"></i></button>
+                                <button type="button" class="tool-btn btn btn-link p-2 text-primary border"
+                                    id="crop-zoom-out" title="Zoom Out"><i data-lucide="zoom-out"
+                                        style="width: 18px;"></i></button>
+                            </div>
+                            <div class="vr opacity-25" style="height: 20px;"></div>
+                            <div class="d-flex gap-1 align-items-center">
+                                <span class="small text-muted me-2"
+                                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Girar</span>
+                                <button type="button" class="tool-btn btn btn-link p-2 text-primary border"
+                                    id="crop-rotate-l" title="Girar Esquerda"><i data-lucide="rotate-ccw"
+                                        style="width: 18px;"></i></button>
+                                <button type="button" class="tool-btn btn btn-link p-2 text-primary border"
+                                    id="crop-rotate-r" title="Girar Direita"><i data-lucide="rotate-cw"
+                                        style="width: 18px;"></i></button>
+                            </div>
+                            <div class="vr opacity-25" style="height: 20px;"></div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="tool-btn btn btn-link p-2 text-danger border"
+                                    id="crop-reset" title="Resetar Recorte"><i data-lucide="refresh-cw"
+                                        style="width: 18px;"></i></button>
+                            </div>
                         </div>
 
                         <div id="scan-line" class="scan-line"></div>
@@ -138,14 +153,13 @@
                     <input type="file" id="file-input" hidden accept="image/png,image/jpeg">
                 </div>
 
-                <div class="controls d-flex flex-column flex-sm-row gap-3 justify-content-center mb-5">
+                <div class="controls d-flex flex-column flex-sm-row gap-3 justify-content-center mb-5 mt-4">
                     <button id="generate-btn" class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow-sm"
                         disabled>ANALISAR REALIDADE IA</button>
+                    <button id="reset-btn" class="btn btn-outline-danger px-4 py-3 rounded-pill fw-semibold shadow-sm"
+                        style="display: none;">CANCELAR OPERAÇÃO</button>
                     <button id="sample-btn"
                         class="btn btn-outline-primary px-5 py-3 rounded-pill fw-semibold">EXPERIMENTAR DEMO</button>
-                    <button id="reset-btn"
-                        class="btn btn-light px-5 py-3 rounded-pill fw-semibold text-danger d-none shadow-sm">MUDAR
-                        FOTO</button>
                 </div>
 
                 <div id="status-msg" class="status-msg text-center mb-4 text-primary fw-medium small text-uppercase"
