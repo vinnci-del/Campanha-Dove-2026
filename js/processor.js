@@ -19,8 +19,6 @@ const CLOUDINARY_CONFIG = {
 async function generateAlgoritmica(imageDataUrl) {
     console.log('Subindo imagem para o motor de IA do Cloudinary...');
 
-    // 1. Preparar o Upload (Assinado para segurança ou Simples para teste)
-    // Para simplificar a integração imediata, usamos o endpoint de upload
     const formData = new FormData();
     formData.append('file', imageDataUrl);
     formData.append('api_key', CLOUDINARY_CONFIG.apiKey);
@@ -37,30 +35,31 @@ async function generateAlgoritmica(imageDataUrl) {
 
         if (uploadData.error) {
             console.error('Erro Cloudinary:', uploadData.error);
-            // Fallback caso o preset não esteja configurado como "unsigned"
-            throw new Error('Erro no upload. Verifique as configurações de Unsigned Upload no Cloudinary.');
+            throw new Error('Erro no upload. Verifique o Unsigned Upload no painel do Cloudinary.');
         }
 
         const publicId = uploadData.public_id;
         const version = uploadData.version;
-        const baseUrl = `https://res.cloudinary.com/${CLOUDINARY_CONFIG.cloudName}/image/upload`;
+        const cloud = CLOUDINARY_CONFIG.cloudName;
 
         /**
-         * 2. APLICAR TRANSFORMACÕES DE IA
-         * Simplificado para prompts mais diretos.
+         * 2. APLICAR TRANSFORMACÕES DE IA (O "Trabalho Duro")
+         * e_gen_replace: Substitui partes da imagem usando IA Generativa.
+         * q_auto,f_auto: Otimização básica.
          */
         const transformations = [
-            'e_gen_replace:from_lips;to_big_plump_lips',
-            'e_gen_replace:from_eyes;to_bright_blue_eyes',
-            'e_gen_replace:from_skin;to_smooth_plastic_skin',
+            'e_beauty:100', // Filtro de beleza IA
+            'e_gen_replace:from_lips;to_big_plump_lips_with_lipstick', // IA nos lábios
+            'e_gen_replace:from_eyes;to_bright_blue_eyes', // IA nos olhos
             'q_auto',
             'f_auto'
         ].join('/');
 
-        // Adicionando /v${version}/ para garantir que o Cloudinary encontre a imagem recém-subida
-        const finalUrl = `${baseUrl}/v${version}/${transformations}/${publicId}`;
+        // URL Final seguindo o padrão rigoroso do Cloudinary:
+        // base_url / transformacoes / v_versao / public_id . jpg
+        const finalUrl = `https://res.cloudinary.com/${cloud}/image/upload/${transformations}/v${version}/${publicId}.jpg`;
 
-        console.log('URL Final (IA):', finalUrl);
+        console.log('URL Final Gerada:', finalUrl);
         return finalUrl;
 
     } catch (err) {
