@@ -211,11 +211,11 @@ async function showResults() {
     elements.resultSection.scrollIntoView({ behavior: 'smooth' });
 }
 
-// ===== Navigation Handling =====
 function showData() {
     elements.mainContent.style.display = 'none';
-    elements.resultSection.style.display = 'none';
+    elements.resultSection.style.setProperty('display', 'none', 'important');
     elements.heroTitleArea.style.display = 'none';
+    if (elements.privacySection) elements.privacySection.style.display = 'none';
     elements.dataSection.style.display = 'block';
 
     // Update active nav state
@@ -223,14 +223,46 @@ function showData() {
     elements.navData.classList.replace('text-secondary', 'text-primary');
     elements.navExperiment.classList.replace('fw-bold', 'fw-medium');
     elements.navExperiment.classList.replace('text-primary', 'text-secondary');
+    if (elements.navPrivacy) {
+        elements.navPrivacy.classList.replace('fw-bold', 'fw-medium');
+        elements.navPrivacy.classList.replace('text-primary', 'text-secondary');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showPrivacy() {
+    elements.mainContent.style.display = 'none';
+    elements.resultSection.style.setProperty('display', 'none', 'important');
+    elements.heroTitleArea.style.display = 'none';
+    elements.dataSection.style.display = 'none';
+    if (elements.privacySection) elements.privacySection.style.display = 'block';
+
+    // Update active nav state
+    if (elements.navPrivacy) {
+        elements.navPrivacy.classList.replace('fw-medium', 'fw-bold');
+        elements.navPrivacy.classList.replace('text-secondary', 'text-primary');
+    }
+
+    // De-activate others
+    elements.navExperiment.classList.replace('fw-bold', 'fw-medium');
+    elements.navExperiment.classList.replace('text-primary', 'text-secondary');
+    elements.navData.classList.replace('fw-bold', 'fw-medium');
+    elements.navData.classList.replace('text-primary', 'text-secondary');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showMain() {
     elements.dataSection.style.display = 'none';
+    if (elements.privacySection) elements.privacySection.style.display = 'none';
     elements.mainContent.style.display = 'block';
-    elements.resultSection.style.display = 'block';
+
+    // Só mostra a seção de resultados se houver imagem ou processamento concluído
+    if (uploadedImage) {
+        elements.resultSection.style.setProperty('display', 'block', 'important');
+    }
+
     elements.heroTitleArea.style.display = 'block';
 
     // Update active nav state
@@ -239,9 +271,15 @@ function showMain() {
     elements.navData.classList.replace('fw-bold', 'fw-medium');
     elements.navData.classList.replace('text-primary', 'text-secondary');
 
+    if (elements.navPrivacy) {
+        elements.navPrivacy.classList.replace('fw-bold', 'fw-medium');
+        elements.navPrivacy.classList.replace('text-primary', 'text-secondary');
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Expor para o escopo global (usado no onclick do HTML)
 window.showData = showData;
 window.showMain = showMain;
+window.showPrivacy = showPrivacy;

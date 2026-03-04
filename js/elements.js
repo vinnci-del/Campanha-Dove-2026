@@ -20,11 +20,14 @@ const elements = {
     resultAlgo: document.getElementById('result-algo'),
     resultOriginal: document.getElementById('result-original'),
 
-    // Research Data Section
+    // Sections & Navigation
     dataSection: document.getElementById('data-section'),
+    privacySection: document.getElementById('privacy-section'),
     mainContent: document.querySelector('main > .col-lg-8'), // The tool area
     navData: document.getElementById('nav-data'),
     navExperiment: document.getElementById('nav-experiment'),
+    navPrivacy: document.getElementById('nav-privacy'),
+    navPrivacyFooter: document.getElementById('nav-privacy-footer'),
     heroTitleArea: document.getElementById('hero-title-area'),
 
     // Toolbar

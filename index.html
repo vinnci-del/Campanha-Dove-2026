@@ -75,6 +75,8 @@
                     style="letter-spacing: 1px;" onclick="showMain()">O Experimento</a>
                 <a href="#" id="nav-data" class="text-secondary text-decoration-none fw-medium small text-uppercase"
                     style="letter-spacing: 1px;" onclick="showData()">Dados da Pesquisa</a>
+                <a href="#" id="nav-privacy" class="text-secondary text-decoration-none fw-medium small text-uppercase"
+                    style="letter-spacing: 1px;" onclick="showPrivacy()">Ética & Código</a>
             </nav>
             <div class="dove-slogan d-none d-lg-block text-primary small fw-semibold"
                 style="letter-spacing: 1px; text-transform: uppercase; opacity: 0.5;">Real Beauty Initiative</div>
@@ -367,6 +369,101 @@
                                 representar mulheres reais em suas campanhas.</p>
                             <div class="d-inline-block py-2 px-4 rounded-pill bg-white border text-primary fw-bold">
                                 Human Alternative Advantage</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABA: ÉTICA E CÓDIGO ABERTO (LGPD) -->
+            <section id="privacy-section" class="col-12 py-5" style="display: none;">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="text-center mb-5">
+                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2 mb-3">LGPD By
+                                Design</span>
+                            <h2 class="display-5 text-primary mb-3" style="font-family: var(--font-main);">Privacidade e
+                                Funcionalidade</h2>
+                            <p class="lead text-secondary mx-auto" style="max-width: 800px;">
+                                Total transparência. Nenhum dado sai do seu dispositivo. Este projeto é de código aberto
+                                para garantir auditoria pública.
+                            </p>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <!-- Privacy Feature 1 -->
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="p-3 bg-light rounded-circle me-3">
+                                            <i data-lucide="server-off" class="text-primary"
+                                                style="width: 24px; height: 24px;"></i>
+                                        </div>
+                                        <h4 class="h5 mb-0 text-primary fw-bold">100% Client-Side</h4>
+                                    </div>
+                                    <p class="text-muted mb-0">Não possuímos servidores de banco de dados nem
+                                        armazenamento em nuvem. Todo o processamento algorítmico, incluindo a biblioteca
+                                        de análise tensorial, é injetado diretamente na memória volátil do seu próprio
+                                        navegador Web (HTML5 Canvas + WebGL).</p>
+                                </div>
+                            </div>
+
+                            <!-- Privacy Feature 2 -->
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="p-3 bg-light rounded-circle me-3">
+                                            <i data-lucide="eye-off" class="text-primary"
+                                                style="width: 24px; height: 24px;"></i>
+                                        </div>
+                                        <h4 class="h5 mb-0 text-primary fw-bold">Zero Retenção</h4>
+                                    </div>
+                                    <p class="text-muted mb-0">No momento em que você fecha a aba ou clica em "Excluir
+                                        dados", os ponteiros de memória (Blob e DataURLs) da sua foto são fisicamente
+                                        destruídos ('garbage collection'). Impossível recuperar ou rastrear seus traços
+                                        faciais originais.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Open Source Tech Stack -->
+                        <div class="card border-0 shadow-sm rounded-5 overflow-hidden">
+                            <div class="card-body p-4 p-md-5">
+                                <h3 class="h3 text-primary mb-4" style="font-family: var(--font-main);">Open Source
+                                    Engine</h3>
+                                <p class="mb-4">Para garantir a imparcialidade do experimento visual, utilizamos apenas
+                                    tecnologias abertas passíveis de revisão pública, evitando algoritmos ocultos de
+                                    grandes corporações (black-box AI).</p>
+
+                                <div class="list-group list-group-flush rounded-3 border">
+                                    <div
+                                        class="list-group-item p-3 py-4 d-flex justify-content-between align-items-center bg-light">
+                                        <div>
+                                            <h5 class="mb-1 fw-bold text-dark">SSD MobileNet V1</h5>
+                                            <small class="text-muted">Motor neural de detecção de pontos de referência
+                                                faciais.</small>
+                                        </div>
+                                        <span class="badge bg-secondary rounded-pill">TensorFlow.js</span>
+                                    </div>
+                                    <div
+                                        class="list-group-item p-3 py-4 d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="mb-1 fw-bold text-dark">Algoritmo de Distorção</h5>
+                                            <small class="text-muted">Script de mesclagem estrutural (Warping + Alpha
+                                                Blending).</small>
+                                        </div>
+                                        <span class="badge bg-secondary rounded-pill">JavaScript ES6</span>
+                                    </div>
+                                    <div
+                                        class="list-group-item p-3 py-4 d-flex justify-content-between align-items-center bg-light">
+                                        <div>
+                                            <h5 class="mb-1 fw-bold text-dark">Análise Fisiológica</h5>
+                                            <small class="text-muted">Proporção Áurea mapeada matematicamente nos
+                                                Landmarks.</small>
+                                        </div>
+                                        <span class="badge bg-secondary rounded-pill">API Aberta</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
