@@ -71,13 +71,13 @@ async function startGeneration() {
     elements.scanLine.style.display = 'block';
 
     const steps = [
-        'Processando prompt: "harmonização artificial exagerada"...',
-        'Aplicando boca grande...',
-        'Criando maçãs do rosto inchadas...',
-        'Alterando cor natural para olhos azuis...',
-        'Gerando queixo definido...',
-        'Adicionando maquiagem pesada...',
-        'Finalizando edição das características originais...'
+        'Conectando ao Meta AI Engine...',
+        'Enviando prompt de harmonização artificial...',
+        'Meta AI: Aplicando expansão labial extrema...',
+        'Meta AI: Redefinindo maçãs do rosto e queixo...',
+        'Meta AI: Processando coloração ocular e maquiagem...',
+        'Meta AI: Finalizando renderização de distorção...',
+        'Recebendo resultado final do Meta AI...'
     ];
 
     for (let i = 0; i < steps.length; i++) {
