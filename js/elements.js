@@ -20,6 +20,12 @@ const elements = {
     resultAlgo: document.getElementById('result-algo'),
     resultOriginal: document.getElementById('result-original'),
 
+    // Research Data Section
+    dataSection: document.getElementById('data-section'),
+    mainContent: document.querySelector('main > .col-lg-8'), // The tool area
+    navData: document.getElementById('nav-data'),
+    navExperiment: document.getElementById('nav-experiment'),
+
     // Toolbar
     btnZoomIn: document.getElementById('crop-zoom-in'),
     btnZoomOut: document.getElementById('crop-zoom-out'),

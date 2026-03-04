@@ -92,6 +92,36 @@
     box-shadow: var(--shadow) !important;
 }
 
+/* Navigation Links */
+.nav-links a {
+    transition: var(--transition);
+    position: relative;
+    padding: 5px 0;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    transition: var(--transition);
+}
+
+.nav-links a.text-primary::after {
+    width: 100%;
+}
+
+.nav-links a:hover {
+    color: var(--primary) !important;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
 /* Background Decoration */
 .bg-glow {
     position: fixed;

@@ -171,3 +171,39 @@ async function showResults() {
     elements.resultSection.style.display = 'block';
     elements.resultSection.scrollIntoView({ behavior: 'smooth' });
 }
+
+// ===== Navigation Handling =====
+function showData() {
+    elements.mainContent.style.display = 'none';
+    elements.resultSection.style.display = 'none';
+    elements.dataSection.style.display = 'block';
+
+    // Update active nav state
+    elements.navData.classList.replace('fw-medium', 'fw-bold');
+    elements.navData.classList.replace('text-secondary', 'text-primary');
+    elements.navExperiment.classList.replace('fw-bold', 'fw-medium');
+    elements.navExperiment.classList.replace('text-primary', 'text-secondary');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showMain() {
+    elements.dataSection.style.display = 'none';
+    elements.mainContent.style.display = 'block';
+    // Se houver resultado pronto, mostramos a seção de resultados tbm
+    if (elements.resultAlgo.src && elements.resultAlgo.src !== window.location.href) {
+        elements.resultSection.style.display = 'block';
+    }
+
+    // Update active nav state
+    elements.navExperiment.classList.replace('fw-medium', 'fw-bold');
+    elements.navExperiment.classList.replace('text-secondary', 'text-primary');
+    elements.navData.classList.replace('fw-bold', 'fw-medium');
+    elements.navData.classList.replace('text-primary', 'text-secondary');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Expor para o escopo global (usado no onclick do HTML)
+window.showData = showData;
+window.showMain = showMain;
