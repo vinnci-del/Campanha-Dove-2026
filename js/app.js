@@ -179,6 +179,7 @@ async function showResults() {
 // ===== Navigation Handling =====
 function showData() {
     elements.mainContent.style.display = 'none';
+    elements.resultSection.style.display = 'none';
     elements.dataSection.style.display = 'block';
 
     // Update active nav state
