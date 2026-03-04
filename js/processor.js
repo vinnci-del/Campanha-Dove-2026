@@ -10,17 +10,15 @@ const HF_CONFIG = {
 };
 
 /**
- * Envia a requisição para a Hugging Face Inference API e retorna a imagem editada.
- * Polido para focar na transformação e melhorar a integração visual.
- * 
+ * Envia a requisição para a IA e processa o "blend" usando marcos faciais.
  * @param {string} imageDataUrl - Data URL da imagem original (base64)
- * @returns {Promise<string>} - Data URL da imagem final editada
+ * @param {object} landmarks - Objeto de marcos faciais do face-api.js
  */
-async function generateAlgoritmica(imageDataUrl) {
-    console.log('Solicitando transformação ao Meta AI Engine (via HF)...');
+async function generateAlgoritmica(imageDataUrl, landmarks) {
+    console.log('Solicitando características ao Meta AI Engine (via HF)...');
 
+    // 1. Chamar a IA para obter a "textura de beleza artificial"
     const apiUrl = `https://router.huggingface.co/hf-inference/models/${HF_CONFIG.model}`;
-
     const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -28,27 +26,22 @@ async function generateAlgoritmica(imageDataUrl) {
             'Content-Type': 'application/json',
             'Accept': 'image/jpeg'
         },
-        body: JSON.stringify({
-            inputs: HF_CONFIG.prompt
-        })
+        body: JSON.stringify({ inputs: HF_CONFIG.prompt })
     });
 
-    if (!response.ok) {
-        throw new Error(`Erro na API (${response.status})`);
-    }
+    if (!response.ok) throw new Error(`Erro na API (${response.status})`);
 
-    const resultBlob = await response.blob();
-    const resultDataUrl = await blobToDataUrl(resultBlob);
+    const aiBlob = await response.blob();
+    const aiDataUrl = await blobToDataUrl(aiBlob);
 
-    // Blend aprimorado para "modificar" e não apenas "sobrepor"
-    return await blendImages(imageDataUrl, resultDataUrl);
+    // 2. Realizar a "atribuição" das características ao rosto real
+    return await attributeToFace(imageDataUrl, aiDataUrl, landmarks);
 }
 
 /**
- * Faz o blend da imagem original com a IA, focando no centro do rosto
- * para evitar o efeito "fantasma" nas bordas e manter o cabelo/objetos originais.
+ * Atribui as características da IA ao rosto original usando coordenadas reais.
  */
-async function blendImages(originalUrl, aiUrl) {
+async function attributeToFace(originalUrl, aiUrl, landmarks) {
     return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -61,31 +54,44 @@ async function blendImages(originalUrl, aiUrl) {
             canvas.height = imgOrig.height;
 
             imgAI.onload = () => {
-                // 1. Base: Imagem Original completa (ambiente, cabelo, etc)
+                // A. Base: Imagem Original
                 ctx.drawImage(imgOrig, 0, 0, canvas.width, canvas.height);
 
-                // 2. Criar uma máscara circular/elíptica para o rosto da IA
+                // --- SISTEMA DE ATRIBUIÇÃO VIA LANDMARKS ---
+
+                // B. Distorção da Boca (Boca Gigante no rosto real)
+                const mouth = landmarks.getMouth();
+                const mouthCenter = getCentroid(mouth);
+                applyLiquify(ctx, mouthCenter.x, mouthCenter.y, 80, 0.4);
+
+                // C. Olhos Azuis Fixos (Nas coordenadas reais)
+                const leftEye = landmarks.getLeftEye();
+                const rightEye = landmarks.getRightEye();
+                drawBlueEye(ctx, getCentroid(leftEye));
+                drawBlueEye(ctx, getCentroid(rightEye));
+
+                // D. Máscara de Recorte Facial (Usando o contorno da mandíbula real)
                 ctx.save();
+                const jaw = landmarks.getJawOutline();
                 ctx.beginPath();
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height * 0.45;
-                ctx.ellipse(centerX, centerY, canvas.width * 0.35, canvas.height * 0.4, 0, 0, Math.PI * 2);
-                ctx.clip(); // Cortar para processar apenas o rosto
+                ctx.moveTo(jaw[0].x, jaw[0].y);
+                jaw.forEach(p => ctx.lineTo(p.x, p.y));
+                // Fechar o topo da máscara pelo topo da testa (estimado)
+                ctx.lineTo(jaw[jaw.length - 1].x, jaw[0].y - 100);
+                ctx.lineTo(jaw[0].x, jaw[0].y - 100);
+                ctx.closePath();
+                ctx.clip();
 
-                // 3. Desenhar a IA no centro com alta opacidade
-                ctx.globalAlpha = 0.9;
+                // E. Atribuir "Pele de Plástico" e Maquiagem da IA apenas no rosto
+                ctx.globalAlpha = 0.6;
                 ctx.drawImage(imgAI, 0, 0, canvas.width, canvas.height);
-                ctx.restore();
 
-                // 4. Blend final de suavização nas bordas
-                ctx.globalCompositeOperation = 'overlay';
+                // F. Blend de Maquiagem Pesada (Multiplicação para sombras)
+                ctx.globalCompositeOperation = 'multiply';
                 ctx.globalAlpha = 0.3;
                 ctx.drawImage(imgAI, 0, 0, canvas.width, canvas.height);
 
-                // 5. Devolver as cores originais da IA (Olhos azuis e batom rosa)
-                ctx.globalCompositeOperation = 'color';
-                ctx.globalAlpha = 0.7;
-                ctx.drawImage(imgAI, 0, 0, canvas.width, canvas.height);
+                ctx.restore();
 
                 resolve(canvas.toDataURL('image/jpeg', 0.85));
             };
@@ -93,6 +99,46 @@ async function blendImages(originalUrl, aiUrl) {
         };
         imgOrig.src = originalUrl;
     });
+}
+
+/** 
+ * Simula um efeito de preenchimento (Liquify) local 
+ * Expandindo os pixels a partir de um centro.
+ */
+function applyLiquify(ctx, x, y, radius, force) {
+    const canvas = ctx.canvas;
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tctx = tempCanvas.getContext('2d');
+    tctx.drawImage(canvas, 0, 0);
+
+    // Simplificação: Desenha a boca esticada horizontalmente
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(1 + force, 1);
+    ctx.drawImage(tempCanvas, x - radius, y - (radius / 2), radius * 2, radius, -radius, -(radius / 2), radius * 2, radius);
+    ctx.restore();
+}
+
+/** Desenha o brilho azul artificial nas coordenadas do olho */
+function drawBlueEye(ctx, center) {
+    ctx.save();
+    const grad = ctx.createRadialGradient(center.x, center.y, 2, center.x, center.y, 15);
+    grad.addColorStop(0, 'rgba(0, 200, 255, 0.8)');
+    grad.addColorStop(1, 'rgba(0, 100, 255, 0)');
+    ctx.fillStyle = grad;
+    ctx.globalCompositeOperation = 'screen';
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
+
+/** Calcula o centro de um conjunto de pontos */
+function getCentroid(points) {
+    const sum = points.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }), { x: 0, y: 0 });
+    return { x: sum.x / points.length, y: sum.y / points.length };
 }
 
 /**

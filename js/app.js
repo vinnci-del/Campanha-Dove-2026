@@ -11,6 +11,7 @@ async function loadFaceModels() {
     const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
     try {
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         console.log('Modelos carregados!');
     } catch (e) {
         console.warn('Erro ao carregar face-api:', e);
@@ -141,16 +142,17 @@ async function showResults() {
     // Captura a imagem recortada do Cropper
     const finalImageData = getCroppedImageData();
 
-    // 1. Validar rosto LOCALMENTE para economizar tokens
-    elements.statusMsg.innerText = 'Validando presença de rosto...';
+    // 1. Validar rosto LOCALMENTE para economizar tokens e obter landmarks
+    elements.statusMsg.innerText = 'Mapeando estrutura facial...';
 
     const img = new Image();
     img.src = finalImageData;
     await new Promise(r => img.onload = r);
 
-    const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions());
+    // Detectar rosto com landmarks (68 pontos)
+    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
 
-    if (detections.length === 0) {
+    if (!result) {
         elements.statusMsg.innerText = 'Nenhum rosto detectado. Por favor, ajuste o recorte para focar em um rosto.';
         elements.generateBtn.disabled = false;
         elements.scanLine.style.display = 'none';
@@ -160,8 +162,9 @@ async function showResults() {
     // Mostrar a imagem original imediatamente
     elements.resultOriginal.src = finalImageData;
 
-    // 2. Chamar a IA para gerar a versão distorcida (AGORA É SEGURO GASTAR TOKEN)
-    const editedImageData = await generateAlgoritmica(finalImageData);
+    // 2. Chamar a IA passando a imagem e o mapeamento facial (landmarks)
+    // Agora o processador pode "atribuir" caracteristicas às coordenadas reais
+    const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
 
     // Mostrar resultado
     elements.resultAlgo.src = editedImageData;
