@@ -58,34 +58,76 @@
     }
 }
 
-/* Toolbar Ergonomics */
+/* Toolbar Ergonomics & Premium Alignment */
 .edit-toolbar {
-    backdrop-filter: blur(15px);
-    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(25px);
+    background-color: rgba(255, 255, 255, 0.92) !important;
     border: 1px solid rgba(0, 45, 98, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 45, 98, 0.12) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    padding: 0.5rem 1.25rem !important;
+    z-index: 100 !important;
+    min-width: fit-content !important;
+}
+
+.tool-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.tool-label {
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    color: var(--secondary) !important;
+    margin-right: 0.25rem !important;
+    user-select: none !important;
+    pointer-events: none !important;
 }
 
 .tool-btn {
-    width: 36px !important;
-    height: 36px !important;
-    border: 1px solid transparent !important;
-    background-color: transparent;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: transparent !important;
+    border: 1px solid rgba(0, 45, 98, 0.08) !important;
     border-radius: 50% !important;
+    color: var(--primary) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-sizing: border-box !important;
 }
 
 .tool-btn:hover {
-    background-color: rgba(0, 45, 98, 0.05) !important;
-    border-color: rgba(0, 45, 98, 0.1) !important;
-    color: var(--primary) !important;
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: white !important;
+    transform: scale(1.08);
 }
 
 .tool-btn#crop-reset {
-    background-color: rgba(220, 53, 69, 0.03) !important;
+    color: #dc3545 !important;
+    border-color: rgba(220, 53, 69, 0.15) !important;
 }
 
 .tool-btn#crop-reset:hover {
-    background-color: rgba(220, 53, 69, 0.1) !important;
-    border-color: rgba(220, 53, 69, 0.2) !important;
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+}
+
+.tool-btn i,
+.tool-btn svg {
+    display: block !important;
+    width: 18px !important;
+    height: 18px !important;
 }
 
 /* Scan Line Animation */
