@@ -71,12 +71,13 @@ async function startGeneration() {
     elements.scanLine.style.display = 'block';
 
     const steps = [
-        'Renderizando enquadramento escolhido...',
-        'Escaneando proporções áureas...',
-        'Aplicando super harmonização exagerada...',
-        'Refinando simetria absoluta...',
-        'Adicionando brilho lúdico...',
-        'Finalizando renderização...'
+        'Processando prompt: "harmonização artificial exagerada"...',
+        'Aplicando boca grande...',
+        'Criando maçãs do rosto inchadas...',
+        'Alterando cor natural para olhos azuis...',
+        'Gerando queixo definido...',
+        'Adicionando maquiagem pesada...',
+        'Finalizando edição das características originais...'
     ];
 
     for (let i = 0; i < steps.length; i++) {
