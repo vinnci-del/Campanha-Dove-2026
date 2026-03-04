@@ -161,21 +161,24 @@ async function showResults() {
 
     // Mostrar a imagem original imediatamente
     elements.resultOriginal.src = finalImageData;
+    elements.resultOriginal.style.display = 'block';
 
     // 2. Chamar a IA e usar o Mapeamento Facial Híbrido
     const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
 
     // Mostrar resultado final gerado pela IA
     elements.resultAlgo.src = editedImageData;
+    elements.resultAlgo.style.display = 'block';
+
+    document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'none');
+
     elements.generateBtn.style.display = 'none';
-    elements.resultSection.style.display = 'block';
     elements.resultSection.scrollIntoView({ behavior: 'smooth' });
 }
 
 // ===== Navigation Handling =====
 function showData() {
     elements.mainContent.style.display = 'none';
-    elements.resultSection.style.display = 'none';
     elements.dataSection.style.display = 'block';
 
     // Update active nav state
@@ -190,10 +193,7 @@ function showData() {
 function showMain() {
     elements.dataSection.style.display = 'none';
     elements.mainContent.style.display = 'block';
-    // Se houver resultado pronto, mostramos a seção de resultados tbm
-    if (elements.resultAlgo.src && elements.resultAlgo.src !== window.location.href) {
-        elements.resultSection.style.display = 'block';
-    }
+    elements.resultSection.style.display = 'block';
 
     // Update active nav state
     elements.navExperiment.classList.replace('fw-medium', 'fw-bold');

@@ -97,7 +97,14 @@ function resetApp() {
     elements.generateBtn.style.display = 'inline-block';
     elements.resetBtn.style.display = 'none';
     elements.sampleBtn.style.display = 'inline-block';
-    elements.resultSection.style.display = 'none';
+
+    // Reset results and show placeholders
+    elements.resultAlgo.src = '';
+    elements.resultOriginal.src = '';
+    elements.resultAlgo.style.display = 'none';
+    elements.resultOriginal.style.display = 'none';
+    document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'flex');
+
     elements.statusMsg.innerText = '';
     elements.fileInput.value = '';
 }
@@ -110,6 +117,10 @@ function deleteData() {
     }
     elements.resultAlgo.src = '';
     elements.resultOriginal.src = '';
+    elements.resultAlgo.style.display = 'none';
+    elements.resultOriginal.style.display = 'none';
+    document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'flex');
+
     elements.previewImg.src = '';
     elements.previewContainer.style.display = 'none';
     elements.uploadPrompt.style.display = 'block';
@@ -117,7 +128,6 @@ function deleteData() {
     elements.generateBtn.style.display = 'inline-block';
     elements.resetBtn.style.display = 'none';
     elements.sampleBtn.style.display = 'inline-block';
-    elements.resultSection.style.display = 'none';
     elements.statusMsg.innerText = 'Todos os seus dados foram removidos.';
     elements.fileInput.value = '';
     setTimeout(() => { elements.statusMsg.innerText = ''; }, 3000);

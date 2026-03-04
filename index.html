@@ -137,7 +137,7 @@
                     style="letter-spacing: 1px;"></div>
             </div>
 
-            <section id="result-section" class="col-12 result-section border-top pt-5 mt-5" style="display: none;">
+            <section id="result-section" class="col-12 result-section border-top pt-5 mt-5">
                 <div class="text-center mb-5">
                     <h2 class="display-5 text-primary mb-3" style="font-family: var(--font-main);">A beleza não precisa
                         de filtros</h2>
@@ -155,10 +155,15 @@
                                     Real</h3>
                                 <p class="small text-muted mb-4 px-3">As características únicas que contam sua história.
                                 </p>
-                                <div class="result-img-box rounded-4 overflow-hidden shadow-sm"
+                                <div class="result-img-box rounded-4 overflow-hidden shadow-sm position-relative"
                                     style="aspect-ratio: 4/5;">
+                                    <div
+                                        class="img-placeholder d-flex flex-column align-items-center justify-content-center h-100 bg-light">
+                                        <i data-lucide="user" class="text-primary opacity-25"
+                                            style="width: 60px; height: 60px;"></i>
+                                    </div>
                                     <img id="result-original" class="result-img w-100 h-100 object-fit-cover" src=""
-                                        alt="Identidade Real">
+                                        alt="Identidade Real" style="display: none;">
                                 </div>
                             </div>
                         </div>
@@ -172,10 +177,15 @@
                                 <h3 class="h4 text-primary mb-2" style="font-family: var(--font-main);">Padronização
                                     Artificial</h3>
                                 <p class="small text-muted mb-4 px-3">O que os algoritmos consideram "perfeito".</p>
-                                <div class="result-img-box rounded-4 overflow-hidden shadow-sm"
+                                <div class="result-img-box rounded-4 overflow-hidden shadow-sm position-relative"
                                     style="aspect-ratio: 4/5;">
+                                    <div
+                                        class="img-placeholder d-flex flex-column align-items-center justify-content-center h-100 bg-light">
+                                        <i data-lucide="sparkles" class="text-accent opacity-25"
+                                            style="width: 60px; height: 60px;"></i>
+                                    </div>
                                     <img id="result-algo" class="result-img w-100 h-100 object-fit-cover" src=""
-                                        alt="Distorção de IA">
+                                        alt="Distorção de IA" style="display: none;">
                                 </div>
                             </div>
                         </div>
