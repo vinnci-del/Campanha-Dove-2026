@@ -1,9 +1,22 @@
 // BLOCO: Lógica Principal do App
 
-// Inicializa Ícones
+// Inicializa Ícones e Modelos de Face Detection
 if (window.lucide) {
     lucide.createIcons();
 }
+
+// Carregar modelos da face-api.js para economizar tokens (validação local)
+async function loadFaceModels() {
+    console.log('Carregando modelos de detecção facial...');
+    const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
+    try {
+        await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+        console.log('Modelos carregados!');
+    } catch (e) {
+        console.warn('Erro ao carregar face-api:', e);
+    }
+}
+loadFaceModels();
 
 // ===== Upload Handling =====
 elements.dropZone.addEventListener('click', (e) => {
@@ -128,10 +141,26 @@ async function showResults() {
     // Captura a imagem recortada do Cropper
     const finalImageData = getCroppedImageData();
 
+    // 1. Validar rosto LOCALMENTE para economizar tokens
+    elements.statusMsg.innerText = 'Validando presença de rosto...';
+
+    const img = new Image();
+    img.src = finalImageData;
+    await new Promise(r => img.onload = r);
+
+    const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions());
+
+    if (detections.length === 0) {
+        elements.statusMsg.innerText = 'Nenhum rosto detectado. Por favor, ajuste o recorte para focar em um rosto.';
+        elements.generateBtn.disabled = false;
+        elements.scanLine.style.display = 'none';
+        throw new Error('FACE_NOT_DETECTED');
+    }
+
     // Mostrar a imagem original imediatamente
     elements.resultOriginal.src = finalImageData;
 
-    // Chamar a IA para gerar a versão distorcida
+    // 2. Chamar a IA para gerar a versão distorcida (AGORA É SEGURO GASTAR TOKEN)
     const editedImageData = await generateAlgoritmica(finalImageData);
 
     // Mostrar resultado
