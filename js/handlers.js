@@ -100,12 +100,17 @@ function resetApp() {
     elements.resetBtn.style.display = 'none';
     elements.sampleBtn.style.display = 'inline-block';
 
-    // Reset results and show placeholders
+    // Reset results and hide section
+    elements.resultSection.style.setProperty('display', 'none', 'important');
     elements.resultAlgo.src = '';
     elements.resultOriginal.src = '';
     elements.resultAlgo.style.display = 'none';
     elements.resultOriginal.style.display = 'none';
-    document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'flex');
+
+    // Restaurar placeholders
+    document.querySelectorAll('.img-placeholder').forEach(p => {
+        p.style.setProperty('display', 'flex', 'important');
+    });
 
     elements.statusMsg.innerText = '';
     elements.fileInput.value = '';
@@ -113,15 +118,21 @@ function resetApp() {
 
 function deleteData() {
     uploadedImage = null;
+    window.isDemoMode = false;
     if (cropper) {
         cropper.destroy();
         cropper = null;
     }
+
+    elements.resultSection.style.setProperty('display', 'none', 'important');
     elements.resultAlgo.src = '';
     elements.resultOriginal.src = '';
     elements.resultAlgo.style.display = 'none';
     elements.resultOriginal.style.display = 'none';
-    document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'flex');
+
+    document.querySelectorAll('.img-placeholder').forEach(p => {
+        p.style.setProperty('display', 'flex', 'important');
+    });
 
     elements.previewImg.src = '';
     elements.previewContainer.style.display = 'none';

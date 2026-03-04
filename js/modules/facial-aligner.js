@@ -6,7 +6,7 @@ const FacialAligner = {
      * Faz o blend do rosto IA sobre o rosto do usuário 
      */
     async alignAndMerge(userUrl, aiUrl, userLm, aiLm) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const userImg = new Image();
@@ -30,8 +30,10 @@ const FacialAligner = {
 
                     resolve(canvas.toDataURL('image/jpeg', CONFIG.Visual.imageQuality));
                 };
+                aiImg.onerror = () => reject(new Error('ERR_LOADING_AI_IMAGE'));
                 aiImg.src = aiUrl;
             };
+            userImg.onerror = () => reject(new Error('ERR_LOADING_USER_IMAGE'));
             userImg.src = userUrl;
         });
     },

@@ -159,25 +159,24 @@ async function showResults() {
 
     if (window.isDemoMode) {
         // MODO DEMO: Fluxo simplificado e infalível
+        elements.resultSection.style.setProperty('display', 'block', 'important');
         elements.statusMsg.innerText = 'Iniciando demonstração do projeto...';
 
-        // Mostrar a original (sample) imediatamente
+        // Mostrar a original (sample) imediatamente e esconder seu placeholder
         elements.resultOriginal.src = finalImageData;
-        elements.resultOriginal.style.display = 'block';
+        elements.resultOriginal.style.setProperty('display', 'block', 'important');
+        document.querySelector('.card-original .img-placeholder')?.style.setProperty('display', 'none', 'important');
 
         // Esperar um tempo para o usuário ler as mensagens de status
         await new Promise(r => setTimeout(r, 6000));
 
-        // Mostrar o resultado demo fixo
+        // Mostrar o resultado demo fixo e esconder seu placeholder
         elements.resultAlgo.src = 'assets/ChatGPT Image 4 de mar. de 2026, 16_17_44.png';
-        elements.resultAlgo.style.display = 'block';
-
-        // Esconder placeholders com força total
-        document.querySelectorAll('.img-placeholder').forEach(p => {
-            p.style.setProperty('display', 'none', 'important');
-        });
+        elements.resultAlgo.style.setProperty('display', 'block', 'important');
+        document.querySelector('.card-ai .img-placeholder')?.style.setProperty('display', 'none', 'important');
     } else {
         // MODO REAL: Processamento com IA
+        elements.resultSection.style.setProperty('display', 'block', 'important');
         elements.statusMsg.innerText = 'Escaneando métricas faciais...';
 
         const img = new Image();
@@ -194,19 +193,18 @@ async function showResults() {
             throw new Error('FACE_NOT_DETECTED');
         }
 
-        // Mostrar a imagem original imediatamente
+        // Mostrar a imagem original imediatamente e esconder seu placeholder
         elements.resultOriginal.src = finalImageData;
-        elements.resultOriginal.style.display = 'block';
+        elements.resultOriginal.style.setProperty('display', 'block', 'important');
+        document.querySelector('.card-original .img-placeholder')?.style.setProperty('display', 'none', 'important');
 
         // Chamar a IA real
         const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
 
-        // Mostrar resultado final gerado pela IA
+        // Mostrar resultado final gerado pela IA e esconder o seu placeholder
         elements.resultAlgo.src = editedImageData;
-        elements.resultAlgo.style.display = 'block';
-
-        // Esconder placeholders
-        document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'none');
+        elements.resultAlgo.style.setProperty('display', 'block', 'important');
+        document.querySelector('.card-ai .img-placeholder')?.style.setProperty('display', 'none', 'important');
     }
 
     elements.generateBtn.style.display = 'none';
