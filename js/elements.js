@@ -10,7 +10,7 @@ const elements = {
     scanLine: document.getElementById('scan-line'),
     statusMsg: document.getElementById('status-msg'),
     resultSection: document.getElementById('result-section'),
-    consentOverlay: document.getElementById('consent-overlay'),
+    consentModal: document.getElementById('consentModal'),
     consentAccept: document.getElementById('consent-accept'),
     consentCancel: document.getElementById('consent-cancel'),
     deleteDataBtn: document.getElementById('delete-data'),

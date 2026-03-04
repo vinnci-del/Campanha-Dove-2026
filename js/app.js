@@ -1,9 +1,16 @@
 // BLOCO: Lógica Principal do App
 
-// Inicializa Ícones e Modelos de Face Detection
+// Inicializa Ícones e Componentes do Bootstrap
+let bConsentModal = null;
 if (window.lucide) {
     lucide.createIcons();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (elements.consentModal) {
+        bConsentModal = new bootstrap.Modal(elements.consentModal);
+    }
+});
 
 // Carregar modelos da face-api.js para economizar tokens (validação local)
 async function loadFaceModels() {
@@ -63,15 +70,15 @@ elements.btnCropReset.addEventListener('click', () => getCropper()?.reset());
 
 // ===== Consent Flow =====
 elements.generateBtn.addEventListener('click', () => {
-    elements.consentOverlay.classList.add('active');
+    bConsentModal?.show();
 });
 
 elements.consentCancel.addEventListener('click', () => {
-    elements.consentOverlay.classList.remove('active');
+    bConsentModal?.hide();
 });
 
 elements.consentAccept.addEventListener('click', async () => {
-    elements.consentOverlay.classList.remove('active');
+    bConsentModal?.hide();
     await startGeneration();
 });
 
