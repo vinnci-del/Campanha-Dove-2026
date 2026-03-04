@@ -1,18 +1,30 @@
 :root {
+    /* Dove Identity Colors */
     --primary: #002d62;
-    --secondary: #666666;
+    /* Classic Dove Navy */
+    --secondary: #6c757d;
+    /* Neutral gray */
     --accent: #b38b4d;
+    /* Elegant Gold */
     --bg: #ffffff;
+    /* Pure white */
+    --bg-alt: #f8f9fa;
+    /* Soft gray-white */
     --card-bg: #ffffff;
-    --bg-alt: #fcf9f0;
-    --glass: rgba(255, 255, 255, 0.9);
+
+    /* UI Decor */
+    --glass: rgba(255, 255, 255, 0.95);
     --glass-border: rgba(0, 45, 98, 0.1);
-    --cold: #002d62;
-    --cold-glow: rgba(0, 45, 98, 0.05);
-    --warm: #b38b4d;
-    --warm-glow: rgba(179, 139, 77, 0.08);
+    --shadow: 0 15px 50px rgba(0, 45, 98, 0.08);
+    /* Soft deep shadow */
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Typography */
     --font-main: 'Playfair Display', serif;
+    /* High-end headers */
     --font-body: 'Inter', sans-serif;
-    --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    --shadow: 0 10px 40px rgba(0, 45, 98, 0.08);
+    /* Clean body */
+
+    /* Spacing */
+    --rounded: 12px;
 }

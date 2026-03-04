@@ -1,132 +1,111 @@
-/* Buttons */
-.btn {
-    padding: clamp(12px, 2vw, 16px) clamp(20px, 4vw, 32px);
-    border-radius: 4px;
-    font-size: clamp(12px, 1.5vw, 14px);
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    font-family: var(--font-body);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: clamp(140px, 30vw, 200px);
-    text-align: center;
-}
+/* Dove Components Refined */
 
 .btn-primary {
-    background: var(--primary);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 45, 98, 0.2);
-}
-
-.btn-primary:disabled {
-    background: #ccc;
-    box-shadow: none;
-    cursor: not-allowed;
+    background-color: var(--primary);
+    border: none;
+    transition: var(--transition);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: #003a80;
+    background-color: #001a3a;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 45, 98, 0.3);
+    box-shadow: 0 10px 20px rgba(0, 45, 98, 0.15);
 }
 
-.btn-secondary {
-    background: #fff;
+.btn-primary:disabled {
+    background-color: #e0e0e0;
+    color: #999;
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
     color: var(--primary);
-    border: 1.5px solid var(--primary);
 }
 
-.btn-secondary:hover {
-    background: var(--bg-alt);
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: white;
 }
 
-.btn-delete {
-    background: transparent;
-    color: #cc0000;
-    border: 1.5px solid #cc0000;
-    gap: 8px;
-    /* For the lucide icon */
+.text-accent {
+    color: var(--accent) !important;
 }
 
-.btn-delete:hover {
-    background: #cc0000;
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(204, 0, 0, 0.2);
+/* Mirror Box (Upload Area) */
+.mirror-box {
+    border: 2px dashed rgba(0, 45, 98, 0.05) !important;
+    transition: var(--transition);
 }
 
-/* Modal / Consent Overlay */
-.consent-overlay {
+.mirror-box.dragover {
+    background-color: rgba(0, 45, 98, 0.02) !important;
+    border-color: var(--primary) !important;
+}
+
+.upload-icon {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Scan Line Animation */
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, transparent, var(--accent), transparent);
+    box-shadow: 0 0 15px var(--accent);
+    z-index: 5;
     display: none;
+    animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+    0% {
+        top: 0;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+/* Custom Card Styles */
+.comparison-card {
+    transition: var(--transition);
+}
+
+.comparison-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow) !important;
+}
+
+/* Background Decoration */
+.bg-glow {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    background: radial-gradient(circle at 10% 10%, rgba(179, 139, 77, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(0, 45, 98, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: -1;
 }
 
-.consent-overlay.active {
-    display: flex;
-}
-
-.consent-box {
-    background: #fff;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow);
-    border-radius: 8px;
-    padding: clamp(40px, 6vw, 60px) clamp(24px, 5vw, 40px);
-    max-width: 580px;
-    width: 100%;
-    text-align: center;
-}
-
-.consent-box h2 {
-    font-family: var(--font-main);
-    font-size: clamp(24px, 4vw, 32px);
-    color: var(--primary);
-    margin-bottom: clamp(16px, 3vw, 24px);
-}
-
-.consent-box p {
-    font-size: clamp(14px, 2vw, 16px);
-    color: var(--secondary);
-    line-height: 1.8;
-    margin-bottom: 20px;
-}
-
-.consent-box .warning {
-    color: var(--accent);
-    font-size: clamp(13px, 1.5vw, 14px);
-    font-weight: 600;
-    margin-bottom: 30px;
-}
-
-.consent-actions {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-@media (max-width: 480px) {
-    .btn {
-        width: 100%;
-        min-width: 100%;
-    }
-
-    .consent-actions {
-        flex-direction: column;
-        width: 100%;
-    }
+/* Icons */
+.lucide {
+    stroke-width: 1.5px;
 }

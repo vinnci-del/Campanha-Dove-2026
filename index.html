@@ -14,148 +14,192 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
         rel="stylesheet">
-    <!-- Estilos em Blocos -->
+    <!-- Estilos Unificados (Dove Identity) -->
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/sections/hero.css">
-    <link rel="stylesheet" href="css/sections/upload.css">
-    <link rel="stylesheet" href="css/sections/results.css">
     <!-- Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Bootstrap Grid Framework (Adaptativo) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap-grid.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<body>
+<body class="bg-light">
     <div class="bg-glow"></div>
 
-    <!-- Consent Modal -->
-    <div id="consent-overlay" class="consent-overlay">
-        <div class="consent-box">
-            <h2>Compromisso com a Beleza Real</h2>
-            <p>Este sistema utiliza inteligência artificial local para demonstrar como os algoritmos tentam padronizar
-                sua identidade. Suas imagens <strong>não são enviadas a servidores</strong> e ficam guardadas apenas no
-                seu navegador.</p>
-            <p>O objetivo é provocar reflexão sobre a valorização da sua essência natural frente aos filtros digitais.
-            </p>
-            <div class="warning">Sua privacidade e sua identidade são nossa prioridade.</div>
-            <div class="consent-actions">
-                <button id="consent-cancel" class="btn btn-secondary">Cancelar</button>
-                <button id="consent-accept" class="btn btn-primary">Aceitar e Gerar</button>
+    <!-- Consent Modal (Bootstrap Styled) -->
+    <div id="consent-overlay" class="consent-overlay align-items-center justify-content-center p-3"
+        style="display: none;">
+        <div class="consent-box shadow-lg p-4 p-md-5 bg-white rounded-4 text-center border-0" style="max-width: 600px;">
+            <h2 class="display-6 mb-4 fw-bold text-primary" style="font-family: var(--font-main);">Compromisso com a
+                Beleza Real</h2>
+            <p class="lead mb-4">Este sistema utiliza inteligência artificial local para demonstrar como os algoritmos
+                tentam padronizar sua identidade.</p>
+            <p class="text-muted mb-4 small italic">O objetivo é provocar reflexão sobre a valorização da sua essência
+                natural frente aos filtros digitais.</p>
+            <div class="alert alert-primary rounded-pill py-2 px-4 d-inline-block small mb-4 border-0"
+                style="background: rgba(0, 45, 98, 0.05); color: var(--primary);">
+                Sua privacidade e sua identidade são nossa prioridade.
+            </div>
+            <div class="d-flex gap-3 justify-content-center pt-2">
+                <button id="consent-cancel" class="btn btn-outline-secondary px-4 py-2 rounded-pill">Agora não</button>
+                <button id="consent-accept" class="btn btn-primary px-5 py-2 rounded-pill shadow-sm">Aceitar e
+                    Iniciar</button>
             </div>
         </div>
     </div>
 
-    <div class="container">
-        <nav>
+    <header class="py-4 bg-white shadow-sm sticky-top mb-5">
+        <div class="container d-flex align-items-center justify-content-between">
             <div class="logo-container">
-                <img src="Belas Artes_idZs7UThPG_1.svg" class="org-logo" alt="Belas Artes Logo">
+                <img src="Belas Artes_idZs7UThPG_1.svg" class="org-logo" alt="Belas Artes Logo" style="height: 45px;">
             </div>
-        </nav>
+            <div class="dove-slogan d-none d-md-block text-primary small fw-semibold"
+                style="letter-spacing: 1px; text-transform: uppercase;">Real Beauty Initiative</div>
+        </div>
+    </header>
 
-        <section class="hero">
-            <h1>Beleza Real.<br>Ou Perfeição IA?</h1>
-            <p class="subtitle">Veja como os algoritmos tentam padronizar sua essência.
-                Use o seletor para focar no rosto e compare sua identidade real com a harmonização artificial.</p>
-            <p class="explain">Uma iniciativa educacional pela valorização da beleza natural
-                frente ao impacto das distorções geradas por inteligência artificial.</p>
+    <div class="container">
+        <section class="hero text-center mb-5 pb-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="display-3 mb-4 text-primary" style="font-family: var(--font-main);">Beleza Real.<br><span
+                            class="text-accent" style="font-style: italic;">Ou Algoritmo?</span></h1>
+                    <p class="lead text-secondary mb-4 mx-auto" style="max-width: 600px;">Veja como os algoritmos de IA
+                        tentam padronizar sua essência e compare com sua identidade única.</p>
+                </div>
+            </div>
         </section>
 
-        <main>
-            <div id="drop-zone" class="mirror-box">
-                <div id="upload-prompt" class="upload-content">
-                    <div class="upload-icon">✦</div>
-                    <p>Arraste uma foto ou clique para escolher</p>
-                    <p style="font-size: 13px; margin-top: 10px; color: rgba(255,255,255,0.25);">PNG ou JPG até 10MB</p>
-                </div>
-
-                <div id="preview-container" class="preview-container">
-                    <img id="preview-img" class="preview-img" src="" alt="Sua foto">
-
-                    <!-- Toolbar de Edição Profissional -->
-                    <div class="edit-toolbar">
-                        <button type="button" class="tool-btn" id="crop-zoom-in" title="Zoom In"><i
-                                data-lucide="zoom-in"></i></button>
-                        <button type="button" class="tool-btn" id="crop-zoom-out" title="Zoom Out"><i
-                                data-lucide="zoom-out"></i></button>
-                        <button type="button" class="tool-btn" id="crop-rotate-l" title="Girar Esquerda"><i
-                                data-lucide="rotate-ccw"></i></button>
-                        <button type="button" class="tool-btn" id="crop-rotate-r" title="Girar Direita"><i
-                                data-lucide="rotate-cw"></i></button>
-                        <button type="button" class="tool-btn" id="crop-reset" title="Resetar"><i
-                                data-lucide="refresh-cw"></i></button>
+        <main class="row justify-content-center g-5">
+            <div class="col-lg-8">
+                <div id="drop-zone"
+                    class="mirror-box shadow-sm rounded-5 overflow-hidden bg-white mb-5 border-0 position-relative"
+                    style="min-height: 450px;">
+                    <div id="upload-prompt"
+                        class="upload-content d-flex flex-column align-items-center justify-content-center h-100 py-5">
+                        <div class="upload-icon mb-3" style="font-size: 3rem; color: var(--accent);">✦</div>
+                        <h4 class="fw-bold text-primary mb-2">Seja Bem-vinda</h4>
+                        <p class="text-muted px-4 text-center">Arraste uma foto ou clique para escolher sua imagem e
+                            iniciar a reflexão.</p>
+                        <span class="badge bg-light text-secondary rounded-pill px-3 py-2 mt-2">PNG ou JPG até
+                            10MB</span>
                     </div>
 
-                    <div id="scan-line" class="scan-line"></div>
+                    <div id="preview-container" class="preview-container h-100 position-relative"
+                        style="display: none;">
+                        <img id="preview-img" class="preview-img w-100 h-100 object-fit-cover" src="" alt="Sua foto">
+
+                        <!-- Toolbar Profissional (Floating) -->
+                        <div class="edit-toolbar shadow-lg rounded-pill p-1 d-flex gap-1 position-absolute bottom-0 start-50 translate-middle-x mb-4 bg-white"
+                            style="z-index: 10;">
+                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-zoom-in"
+                                title="Zoom In"><i data-lucide="zoom-in"></i></button>
+                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-zoom-out"
+                                title="Zoom Out"><i data-lucide="zoom-out"></i></button>
+                            <div class="vr my-2 opacity-10"></div>
+                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-rotate-l"
+                                title="Girar Esquerda"><i data-lucide="rotate-ccw"></i></button>
+                            <button type="button" class="tool-btn btn btn-link p-2 text-primary" id="crop-rotate-r"
+                                title="Girar Direita"><i data-lucide="rotate-cw"></i></button>
+                            <div class="vr my-2 opacity-10"></div>
+                            <button type="button" class="tool-btn btn btn-link p-2 text-danger" id="crop-reset"
+                                title="Resetar"><i data-lucide="refresh-cw"></i></button>
+                        </div>
+
+                        <div id="scan-line" class="scan-line"></div>
+                    </div>
+
+                    <input type="file" id="file-input" hidden accept="image/png,image/jpeg">
                 </div>
 
-                <input type="file" id="file-input" hidden accept="image/png,image/jpeg">
-            </div>
-
-            <div class="controls">
-                <button id="generate-btn" class="btn btn-primary" disabled>TESTAR REALIDADE IA</button>
-                <button id="reset-btn" class="btn btn-secondary" style="display: none;">MUDAR FOTO</button>
-                <button id="sample-btn" class="btn btn-secondary btn-demo">EXPERIMENTAR DEMO</button>
-            </div>
-
-            <div id="status-msg" class="status-msg"></div>
-
-            <section id="result-section" class="result-section">
-                <div class="result-heading">
-                    <h2>A beleza não precisa de filtros</h2>
-                    <p>Compare sua beleza real com a padronização artificial gerada por IA.</p>
+                <div class="controls d-flex flex-column flex-sm-row gap-3 justify-content-center mb-5">
+                    <button id="generate-btn" class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow-sm"
+                        disabled>ANALISAR REALIDADE IA</button>
+                    <button id="sample-btn"
+                        class="btn btn-outline-primary px-5 py-3 rounded-pill fw-semibold">EXPERIMENTAR DEMO</button>
+                    <button id="reset-btn"
+                        class="btn btn-light px-5 py-3 rounded-pill fw-semibold text-danger d-none shadow-sm">MUDAR
+                        FOTO</button>
                 </div>
 
-                <div class="row comparison-grid">
-                    <!-- Card 1: Original (Left) -->
-                    <div class="col-12 col-md-6 mb-4">
-                        <div class="comparison-card card-original">
-                            <h3>Sua Identidade Real</h3>
-                            <p class="card-desc">As características que tornam você única e real.</p>
-                            <div class="result-img-box">
-                                <img id="result-original" class="result-img" src="" alt="Identidade Real">
+                <div id="status-msg" class="status-msg text-center mb-4 text-primary fw-medium small text-uppercase"
+                    style="letter-spacing: 1px;"></div>
+            </div>
+
+            <section id="result-section" class="col-12 result-section border-top pt-5 mt-5" style="display: none;">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 text-primary mb-3" style="font-family: var(--font-main);">A beleza não precisa
+                        de filtros</h2>
+                    <p class="lead text-secondary mx-auto" style="max-width: 700px;">Compare sua essência real com a
+                        padronização artificial imposta pelos algoritmos de IA.</p>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <!-- Card 1: Original -->
+                    <div class="col-md-6">
+                        <div
+                            class="comparison-card card-original p-1 bg-white shadow-sm border rounded-5 h-100 overflow-hidden">
+                            <div class="card-body p-4 text-center">
+                                <h3 class="h4 text-primary mb-2" style="font-family: var(--font-main);">Sua Identidade
+                                    Real</h3>
+                                <p class="small text-muted mb-4 px-3">As características únicas que contam sua história.
+                                </p>
+                                <div class="result-img-box rounded-4 overflow-hidden shadow-sm"
+                                    style="aspect-ratio: 4/5;">
+                                    <img id="result-original" class="result-img w-100 h-100 object-fit-cover" src=""
+                                        alt="Identidade Real">
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 2: Super Harmonizada (Right) -->
-                    <div class="col-12 col-md-6 mb-4">
-                        <div class="comparison-card card-cold">
-                            <h3>Padronização Artificial</h3>
-                            <p class="card-desc">O que os algoritmos consideram "perfeito": simetria irreal e pele sem
-                                textura.</p>
-                            <div class="result-img-box">
-                                <img id="result-algo" class="result-img" src="" alt="Distorção de IA">
+                    <!-- Card 2: AI Version -->
+                    <div class="col-md-6">
+                        <div class="comparison-card card-ai p-1 bg-white shadow-sm border rounded-5 h-100 overflow-hidden"
+                            style="border-top: 5px solid var(--accent) !important;">
+                            <div class="card-body p-4 text-center">
+                                <h3 class="h4 text-primary mb-2" style="font-family: var(--font-main);">Padronização
+                                    Artificial</h3>
+                                <p class="small text-muted mb-4 px-3">O que os algoritmos consideram "perfeito".</p>
+                                <div class="result-img-box rounded-4 overflow-hidden shadow-sm"
+                                    style="aspect-ratio: 4/5;">
+                                    <img id="result-algo" class="result-img w-100 h-100 object-fit-cover" src=""
+                                        alt="Distorção de IA">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="reflection" class="reflection">
-                    <h2>Sua beleza é única.</h2>
-                    <p>Não deixe que os algoritmos definam como você deve se ver. Reforce sua identidade real.</p>
+                <div id="reflection" class="reflection bg-white p-5 rounded-5 shadow-sm text-center mb-5 border-0">
+                    <div class="mb-3" style="font-size: 2rem; color: var(--accent);">🕊️</div>
+                    <h2 class="display-6 text-primary mb-3" style="font-family: var(--font-main);">Sua beleza é única.
+                    </h2>
+                    <p class="lead text-secondary mx-auto" style="max-width: 600px;">Não deixe que os algoritmos definam
+                        como você deve se ver. Reforce sua identidade real e aceite sua beleza como ela é.</p>
                 </div>
             </section>
-
         </main>
     </div> <!-- Close .container -->
 
-    <div class="disclaimer-bar">
-        <div class="container" style="padding-top:0; padding-bottom:0; background:transparent; border-top:none;">
-            <p>Esta é uma iniciativa educacional. Todo processamento é 100% local e privado.</p>
-            <div style="margin-top: 24px;">
-                <button id="delete-data" class="btn btn-delete"><i data-lucide="trash-2"></i> Excluir e remover
-                    todas as imagens</button>
-            </div>
+    <div class="disclaimer-bar py-5 bg-white border-top mt-5">
+        <div class="container text-center">
+            <p class="text-muted small mb-4">Esta é uma iniciativa educacional pela valorização da beleza real. Todo
+                processamento de imagem é realizado de forma privada no seu navegador.</p>
+            <button id="delete-data" class="btn btn-link text-danger text-decoration-none small">
+                <i data-lucide="trash-2" class="me-1"></i> Excluir e remover todas as imagens
+            </button>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Campanha Dove | Projeto Real Beauty</p>
+    <footer class="py-4 bg-light">
+        <div class="container text-center">
+            <p class="small text-secondary mb-0">&copy; 2026 Campanha Dove | Projeto Acadêmico Real Beauty</p>
         </div>
     </footer>
 
