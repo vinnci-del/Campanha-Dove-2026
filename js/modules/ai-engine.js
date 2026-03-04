@@ -19,6 +19,11 @@ const AIEngine = {
             })
         });
 
+        if (response.status === 503) {
+            const data = await response.json();
+            throw new Error(`MODEL_LOADING:${Math.ceil(data.estimated_time || 20)}`);
+        }
+
         if (!response.ok) throw new Error(`Status IA: ${response.status}`);
 
         const blob = await response.blob();

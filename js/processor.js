@@ -10,7 +10,7 @@ async function generateAlgoritmica(userImageData, userLandmarks) {
     aiImg.src = aiDataUrl;
     await new Promise(r => aiImg.onload = r);
 
-    const aiFaceData = await faceapi.detectSingleFace(aiImg, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+    const aiFaceData = await faceapi.detectSingleFace(aiImg, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.35 })).withFaceLandmarks();
 
     if (!aiFaceData) {
         console.warn('IA não retornou rosto claro. Usando fallback básico.');

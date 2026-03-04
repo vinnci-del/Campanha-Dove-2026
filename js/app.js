@@ -18,7 +18,7 @@ async function loadFaceModels() {
     console.log('Carregando modelos de detecção facial...');
     const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
     try {
-        await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         console.log('Modelos carregados!');
     } catch (e) {
@@ -135,9 +135,15 @@ async function startGeneration() {
                 elements.statusMsg.innerText = 'Geração concluída!';
             } catch (retryErr) {
                 console.error('Erro na segunda tentativa:', retryErr);
-                elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente mais tarde.';
+                if (retryErr.message === 'FACE_NOT_DETECTED') {
+                    // Já tratado em showResults
+                } else {
+                    elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente mais tarde.';
+                }
                 elements.generateBtn.disabled = false;
             }
+        } else if (err.message === 'FACE_NOT_DETECTED') {
+            // A mensagem já foi definida em showResults, não sobrescrever
         } else {
             elements.statusMsg.innerText = window.isDemoMode ? 'Erro ao processar demo.' : 'Erro ao processar a imagem. Tente novamente.';
             elements.generateBtn.disabled = false;
@@ -178,8 +184,8 @@ async function showResults() {
         img.src = finalImageData;
         await new Promise(r => img.onload = r);
 
-        // Detectar rosto com seus "landmarks"
-        const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+        // Detectar rosto com SSD MobileNet (mais preciso para fotos reais)
+        const result = await faceapi.detectSingleFace(img, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.35 })).withFaceLandmarks();
 
         if (!result) {
             elements.statusMsg.innerText = 'Rosto não detectado no recorte. Por favor, ajuste o seletor.';
