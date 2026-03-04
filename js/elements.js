@@ -25,6 +25,7 @@ const elements = {
     mainContent: document.querySelector('main > .col-lg-8'), // The tool area
     navData: document.getElementById('nav-data'),
     navExperiment: document.getElementById('nav-experiment'),
+    heroTitleArea: document.getElementById('hero-title-area'),
 
     // Toolbar
     btnZoomIn: document.getElementById('crop-zoom-in'),

@@ -187,6 +187,7 @@ async function showResults() {
 function showData() {
     elements.mainContent.style.display = 'none';
     elements.resultSection.style.display = 'none';
+    elements.heroTitleArea.style.display = 'none';
     elements.dataSection.style.display = 'block';
 
     // Update active nav state
@@ -202,6 +203,7 @@ function showMain() {
     elements.dataSection.style.display = 'none';
     elements.mainContent.style.display = 'block';
     elements.resultSection.style.display = 'block';
+    elements.heroTitleArea.style.display = 'block';
 
     // Update active nav state
     elements.navExperiment.classList.replace('fw-medium', 'fw-bold');
