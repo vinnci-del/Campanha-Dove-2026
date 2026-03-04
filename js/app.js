@@ -2,6 +2,7 @@
 
 // Inicializa Ícones e Componentes do Bootstrap
 let bConsentModal = null;
+let isDemoMode = false;
 if (window.lucide) {
     lucide.createIcons();
 }
@@ -55,6 +56,7 @@ elements.fileInput.addEventListener('change', (e) => {
 
 elements.sampleBtn.addEventListener('click', () => {
     if (typeof SAMPLE_BASE64 !== 'undefined') {
+        isDemoMode = true;
         setUploadedImage(SAMPLE_BASE64);
     } else {
         alert('Imagem de demonstração não encontrada.');
@@ -88,57 +90,64 @@ elements.deleteDataBtn.addEventListener('click', deleteData);
 
 // ===== Generation Logic (Integração Hugging Face) =====
 async function startGeneration() {
-    elements.generateBtn.disabled = true;
-    elements.scanLine.style.display = 'block';
-
-    const steps = [
-        'Conectando à IA generativa...',
-        'Enviando sua foto para processamento...',
-        'IA analisando características faciais...',
-        'Aplicando harmonização artificial exagerada...',
-        'Processando boca, olhos, maquiagem e contorno...',
-        'Aguardando resultado da IA...'
-    ];
-
-    // Mostrar mensagens de progresso enquanto a API processa
-    let stepIndex = 0;
-    const stepInterval = setInterval(() => {
-        if (stepIndex < steps.length) {
-            elements.statusMsg.innerText = steps[stepIndex];
-            stepIndex++;
-        } else {
-            // Ciclar nas últimas mensagens enquanto aguarda
-            elements.statusMsg.innerText = 'IA processando sua imagem... Aguarde...';
+    if (isDemoMode) {
+        // Modo Demo: Simula processamento e mostra resultado estático
+        try {
+            await showResults();
+            elements.statusMsg.innerText = 'Geração concluída (Modo Demo)!';
+        } catch (err) {
+            console.error('Erro no modo demo:', err);
+            elements.statusMsg.innerText = 'Erro ao processar demo.';
+            elements.generateBtn.disabled = false;
         }
-    }, 3000);
+    } else {
+        // Modo Normal: Chamada real para a API
+        const steps = [
+            'Conectando à IA generativa...',
+            'Enviando sua foto para processamento...',
+            'IA analisando características faciais...',
+            'Aplicando harmonização artificial exagerada...',
+            'Processando boca, olhos, maquiagem e contorno...',
+            'Aguardando resultado da IA...'
+        ];
 
-    try {
-        await showResults();
-        clearInterval(stepInterval);
-        elements.statusMsg.innerText = 'Geração concluída!';
-    } catch (err) {
-        clearInterval(stepInterval);
-        console.error('Erro na geração:', err);
+        let stepIndex = 0;
+        const stepInterval = setInterval(() => {
+            if (stepIndex < steps.length) {
+                elements.statusMsg.innerText = steps[stepIndex];
+                stepIndex++;
+            } else {
+                elements.statusMsg.innerText = 'IA processando sua imagem... Aguarde...';
+            }
+        }, 3000);
 
-        if (err.message && err.message.startsWith('MODEL_LOADING:')) {
-            const waitTime = parseInt(err.message.split(':')[1]);
-            elements.statusMsg.innerText = `Modelo de IA carregando... Tentando novamente em ${waitTime}s`;
+        try {
+            await showResults();
+            clearInterval(stepInterval);
+            elements.statusMsg.innerText = 'Geração concluída!';
+        } catch (err) {
+            clearInterval(stepInterval);
+            console.error('Erro na geração:', err);
 
-            // Tentar novamente após o modelo carregar
-            await delay(waitTime * 1000);
-            elements.statusMsg.innerText = 'Reenviando imagem para processamento...';
+            if (err.message && err.message.startsWith('MODEL_LOADING:')) {
+                const waitTime = parseInt(err.message.split(':')[1]);
+                elements.statusMsg.innerText = `Modelo de IA carregando... Tentando novamente em ${waitTime}s`;
 
-            try {
-                await showResults();
-                elements.statusMsg.innerText = 'Geração concluída!';
-            } catch (retryErr) {
-                console.error('Erro na segunda tentativa:', retryErr);
-                elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente mais tarde.';
+                await delay(waitTime * 1000);
+                elements.statusMsg.innerText = 'Reenviando imagem para processamento...';
+
+                try {
+                    await showResults();
+                    elements.statusMsg.innerText = 'Geração concluída!';
+                } catch (retryErr) {
+                    console.error('Erro na segunda tentativa:', retryErr);
+                    elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente mais tarde.';
+                    elements.generateBtn.disabled = false;
+                }
+            } else {
+                elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente.';
                 elements.generateBtn.disabled = false;
             }
-        } else {
-            elements.statusMsg.innerText = 'Erro ao processar a imagem. Tente novamente.';
-            elements.generateBtn.disabled = false;
         }
     }
 
@@ -170,8 +179,14 @@ async function showResults() {
     elements.resultOriginal.src = finalImageData;
     elements.resultOriginal.style.display = 'block';
 
-    // 2. Chamar a IA e usar o Mapeamento Facial Híbrido
-    const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
+    // 2. Chamar a IA ou usar resultado estático se for demo
+    let editedImageData;
+    if (isDemoMode) {
+        // Usar a imagem sample.png que está na pasta assets
+        editedImageData = 'assets/sample.png';
+    } else {
+        editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
+    }
 
     // Mostrar resultado final gerado pela IA
     elements.resultAlgo.src = editedImageData;

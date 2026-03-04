@@ -80,6 +80,7 @@ function handleFile(file) {
         alert('Por favor, envie uma imagem válida (PNG ou JPG).');
         return;
     }
+    isDemoMode = false;
     const reader = new FileReader();
     reader.onload = (e) => setUploadedImage(e.target.result);
     reader.readAsDataURL(file);
@@ -87,6 +88,7 @@ function handleFile(file) {
 
 function resetApp() {
     uploadedImage = null;
+    isDemoMode = false;
     if (cropper) {
         cropper.destroy();
         cropper = null;
