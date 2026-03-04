@@ -142,31 +142,31 @@ async function showResults() {
     // Captura a imagem recortada do Cropper
     const finalImageData = getCroppedImageData();
 
-    // 1. Validar rosto LOCALMENTE para economizar tokens e obter landmarks
-    elements.statusMsg.innerText = 'Mapeando estrutura facial...';
+    // 1. Validar rosto LOCALMENTE para economizar tokens
+    elements.statusMsg.innerText = 'Validando presença de rosto...';
 
     const img = new Image();
     img.src = finalImageData;
     await new Promise(r => img.onload = r);
 
-    // Detectar rosto com landmarks (68 pontos)
-    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+    // Detectar apenas a presença do rosto para economizar tokens
+    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions());
 
     if (!result) {
-        elements.statusMsg.innerText = 'Nenhum rosto detectado. Por favor, ajuste o recorte para focar em um rosto.';
+        elements.statusMsg.innerText = 'Rosto não detectado no recorte. Por favor, ajuste o seletor.';
         elements.generateBtn.disabled = false;
         elements.scanLine.style.display = 'none';
         throw new Error('FACE_NOT_DETECTED');
     }
 
-    // Mostrar a imagem original imediatamente
+    // Mostrar a imagem original imediatamente no card de comparação
     elements.resultOriginal.src = finalImageData;
 
-    // 2. Chamar a IA passando a imagem e o mapeamento facial (landmarks)
-    // Agora o processador pode "atribuir" caracteristicas às coordenadas reais
-    const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
+    // 2. Chamar a IA (Img2Img) para gerar a versão modificada
+    // Enviamos a própria foto recortada para que a IA a transforme
+    const editedImageData = await generateAlgoritmica(finalImageData);
 
-    // Mostrar resultado
+    // Mostrar resultado final gerado pela IA
     elements.resultAlgo.src = editedImageData;
     elements.generateBtn.style.display = 'none';
     elements.resultSection.style.display = 'block';
