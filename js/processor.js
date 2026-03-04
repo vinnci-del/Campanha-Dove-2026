@@ -40,6 +40,7 @@ async function generateAlgoritmica(imageDataUrl, landmarks) {
 
 /**
  * Atribui as características da IA ao rosto original usando coordenadas reais.
+ * Modificado para NÃO APENAS COLAR, mas sim deformar a original e mesclar suavemente.
  */
 async function attributeToFace(originalUrl, aiUrl, landmarks) {
     return new Promise((resolve) => {
@@ -54,44 +55,59 @@ async function attributeToFace(originalUrl, aiUrl, landmarks) {
             canvas.height = imgOrig.height;
 
             imgAI.onload = () => {
-                // A. Base: Imagem Original
+                // 1. Base: Imagem Original (O rosto real que vamos modificar)
                 ctx.drawImage(imgOrig, 0, 0, canvas.width, canvas.height);
 
-                // --- SISTEMA DE ATRIBUIÇÃO VIA LANDMARKS ---
+                // --- SISTEMA DE TRANSFORMAÇÃO NA FOTO ORIGINAL ---
 
-                // B. Distorção da Boca (Boca Gigante no rosto real)
+                // 2. Distorção da Boca (Esticar a boca da pessoa)
                 const mouth = landmarks.getMouth();
                 const mouthCenter = getCentroid(mouth);
-                applyLiquify(ctx, mouthCenter.x, mouthCenter.y, 80, 0.4);
+                // Estica horizontalmente e um pouco verticalmente (Boca Grande Barbie)
+                applyAdvancedDistort(ctx, mouthCenter.x, mouthCenter.y, 100, 1.6, 1.4);
 
-                // C. Olhos Azuis Fixos (Nas coordenadas reais)
+                // 3. Maçãs do Rosto (Inchamento)
+                const jaw = landmarks.getJawOutline();
+                // Pontos aproximados das bochechas
+                applyAdvancedDistort(ctx, jaw[3].x, jaw[6].y, 100, 1.25, 1.25);
+                applyAdvancedDistort(ctx, jaw[13].x, jaw[6].y, 100, 1.25, 1.25);
+
+                // 4. Desenhar Olhos Azuis (Brilho translúcido sobre o olho real)
                 const leftEye = landmarks.getLeftEye();
                 const rightEye = landmarks.getRightEye();
-                drawBlueEye(ctx, getCentroid(leftEye));
-                drawBlueEye(ctx, getCentroid(rightEye));
+                drawGlowEye(ctx, getCentroid(leftEye));
+                drawGlowEye(ctx, getCentroid(rightEye));
 
-                // D. Máscara de Recorte Facial (Usando o contorno da mandíbula real)
-                ctx.save();
-                const jaw = landmarks.getJawOutline();
-                ctx.beginPath();
-                ctx.moveTo(jaw[0].x, jaw[0].y);
-                jaw.forEach(p => ctx.lineTo(p.x, p.y));
-                // Fechar o topo da máscara pelo topo da testa (estimado)
-                ctx.lineTo(jaw[jaw.length - 1].x, jaw[0].y - 100);
-                ctx.lineTo(jaw[0].x, jaw[0].y - 100);
-                ctx.closePath();
-                ctx.clip();
+                // 5. Mesclagem de "Pele de Plástico" (IA) usando Alpha Mask Suave
+                // Em vez de clipar um "ovo", usamos um gradiente radial para esfumaçar as bordas
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tctx = tempCanvas.getContext('2d');
 
-                // E. Atribuir "Pele de Plástico" e Maquiagem da IA apenas no rosto
+                // Desenha a imagem da IA
+                tctx.drawImage(imgAI, 0, 0, canvas.width, canvas.height);
+
+                // Cria uma máscara de transparência (gradiente)
+                tctx.globalCompositeOperation = 'destination-in';
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height * 0.45;
+                const grad = tctx.createRadialGradient(centerX, centerY, canvas.width * 0.1, centerX, centerY, canvas.width * 0.45);
+                grad.addColorStop(0, 'rgba(0,0,0,1)'); // Centro opaco
+                grad.addColorStop(0.8, 'rgba(0,0,0,0.5)'); // Bordas sumindo
+                grad.addColorStop(1, 'rgba(0,0,0,0)'); // Transparente total
+
+                tctx.fillStyle = grad;
+                tctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // 6. Aplica a camada de textura da IA com blend de Cor e Suavização
+                ctx.globalAlpha = 0.5; // Ocupa metade da textura
+                ctx.drawImage(tempCanvas, 0, 0);
+
+                // 7. Blend de Cor (Para pegar o tom de maquiagem e olhos da IA)
+                ctx.globalCompositeOperation = 'color';
                 ctx.globalAlpha = 0.6;
-                ctx.drawImage(imgAI, 0, 0, canvas.width, canvas.height);
-
-                // F. Blend de Maquiagem Pesada (Multiplicação para sombras)
-                ctx.globalCompositeOperation = 'multiply';
-                ctx.globalAlpha = 0.3;
-                ctx.drawImage(imgAI, 0, 0, canvas.width, canvas.height);
-
-                ctx.restore();
+                ctx.drawImage(tempCanvas, 0, 0);
 
                 resolve(canvas.toDataURL('image/jpeg', 0.85));
             };
@@ -102,35 +118,43 @@ async function attributeToFace(originalUrl, aiUrl, landmarks) {
 }
 
 /** 
- * Simula um efeito de preenchimento (Liquify) local 
- * Expandindo os pixels a partir de um centro.
+ * Distorce a imagem esticando uma área específica (Warp Effect)
  */
-function applyLiquify(ctx, x, y, radius, force) {
+function applyAdvancedDistort(ctx, x, y, radius, scaleX, scaleY) {
     const canvas = ctx.canvas;
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
     const tctx = tempCanvas.getContext('2d');
-    tctx.drawImage(canvas, 0, 0);
 
-    // Simplificação: Desenha a boca esticada horizontalmente
+    // Pega a área original
+    tctx.drawImage(canvas,
+        x - radius, y - radius, radius * 2, radius * 2,
+        0, 0, radius * 2, radius * 2
+    );
+
     ctx.save();
     ctx.translate(x, y);
-    ctx.scale(1 + force, 1);
-    ctx.drawImage(tempCanvas, x - radius, y - (radius / 2), radius * 2, radius, -radius, -(radius / 2), radius * 2, radius);
+    ctx.scale(scaleX, scaleY);
+    // Desenha a área esticada de volta
+    ctx.drawImage(tempCanvas,
+        0, 0, radius * 2, radius * 2,
+        -radius, -radius, radius * 2, radius * 2
+    );
     ctx.restore();
 }
 
-/** Desenha o brilho azul artificial nas coordenadas do olho */
-function drawBlueEye(ctx, center) {
+/** Desenha o brilho azul artificial nas coordenadas do olho de forma suave */
+function drawGlowEye(ctx, center) {
     ctx.save();
-    const grad = ctx.createRadialGradient(center.x, center.y, 2, center.x, center.y, 15);
-    grad.addColorStop(0, 'rgba(0, 200, 255, 0.8)');
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, 14, 0, Math.PI * 2);
+    const grad = ctx.createRadialGradient(center.x, center.y, 2, center.x, center.y, 14);
+    grad.addColorStop(0, 'rgba(0, 180, 255, 0.9)');
+    grad.addColorStop(0.5, 'rgba(0, 100, 255, 0.4)');
     grad.addColorStop(1, 'rgba(0, 100, 255, 0)');
     ctx.fillStyle = grad;
-    ctx.globalCompositeOperation = 'screen';
-    ctx.beginPath();
-    ctx.arc(center.x, center.y, 12, 0, Math.PI * 2);
+    ctx.globalCompositeOperation = 'overlay';
     ctx.fill();
     ctx.restore();
 }
