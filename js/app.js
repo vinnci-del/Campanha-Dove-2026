@@ -142,15 +142,15 @@ async function showResults() {
     // Captura a imagem recortada do Cropper
     const finalImageData = getCroppedImageData();
 
-    // 1. Validar rosto LOCALMENTE para economizar tokens
-    elements.statusMsg.innerText = 'Validando presença de rosto...';
+    // 1. Validar e mapear o rosto original LOCALMENTE (Essencial para o Hybrid Aligment)
+    elements.statusMsg.innerText = 'Escaneando métricas faciais...';
 
     const img = new Image();
     img.src = finalImageData;
     await new Promise(r => img.onload = r);
 
-    // Detectar apenas a presença do rosto para economizar tokens
-    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions());
+    // Detectar rosto com seus "landmarks" (pontos estruturais)
+    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
 
     if (!result) {
         elements.statusMsg.innerText = 'Rosto não detectado no recorte. Por favor, ajuste o seletor.';
@@ -162,9 +162,9 @@ async function showResults() {
     // Mostrar a imagem original imediatamente no card de comparação
     elements.resultOriginal.src = finalImageData;
 
-    // 2. Chamar a IA (Img2Img) para gerar a versão modificada
-    // Enviamos a própria foto recortada para que a IA a transforme
-    const editedImageData = await generateAlgoritmica(finalImageData);
+    // 2. Chamar a IA (Text-to-Image) e usar o Mapeamento Facial Híbrido
+    // A foto original vai como BASE, e os landmarks servem como "mapa de colagem"
+    const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
 
     // Mostrar resultado final gerado pela IA
     elements.resultAlgo.src = editedImageData;
