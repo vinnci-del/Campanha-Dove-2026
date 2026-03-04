@@ -2,7 +2,7 @@
 
 // Inicializa Ícones e Componentes do Bootstrap
 let bConsentModal = null;
-let isDemoMode = false;
+window.isDemoMode = false;
 if (window.lucide) {
     lucide.createIcons();
 }
@@ -56,7 +56,7 @@ elements.fileInput.addEventListener('change', (e) => {
 
 elements.sampleBtn.addEventListener('click', () => {
     if (typeof SAMPLE_BASE64 !== 'undefined') {
-        isDemoMode = true;
+        window.isDemoMode = true;
         setUploadedImage(SAMPLE_BASE64);
     } else {
         alert('Imagem de demonstração não encontrada.');
@@ -102,9 +102,9 @@ async function startGeneration() {
         'Aguardando resultado da IA...'
     ];
 
-    // Mostrar mensagens de progresso (mesmo se for demo para manter a experiência)
+    // Mostrar mensagens de progresso (mesmo se for demo para manter a experiência autoritária)
     let stepIndex = 0;
-    const intervalTime = isDemoMode ? 800 : 3000; // Demo é mais rápido, mas mantém o "feeling"
+    const intervalTime = 3000; // Restaurando o tempo antigo (3s) conforme preferência
 
     const stepInterval = setInterval(() => {
         if (stepIndex < steps.length) {
@@ -118,12 +118,12 @@ async function startGeneration() {
     try {
         await showResults();
         clearInterval(stepInterval);
-        elements.statusMsg.innerText = isDemoMode ? 'Geração concluída (Modo Demo)!' : 'Geração concluída!';
+        elements.statusMsg.innerText = window.isDemoMode ? 'Geração concluída (Modo Demo)!' : 'Geração concluída!';
     } catch (err) {
         clearInterval(stepInterval);
         console.error('Erro na geração:', err);
 
-        if (!isDemoMode && err.message && err.message.startsWith('MODEL_LOADING:')) {
+        if (!window.isDemoMode && err.message && err.message.startsWith('MODEL_LOADING:')) {
             const waitTime = parseInt(err.message.split(':')[1]);
             elements.statusMsg.innerText = `Modelo de IA carregando... Tentando novamente em ${waitTime}s`;
 
@@ -139,7 +139,7 @@ async function startGeneration() {
                 elements.generateBtn.disabled = false;
             }
         } else {
-            elements.statusMsg.innerText = isDemoMode ? 'Erro ao processar demo.' : 'Erro ao processar a imagem. Tente novamente.';
+            elements.statusMsg.innerText = window.isDemoMode ? 'Erro ao processar demo.' : 'Erro ao processar a imagem. Tente novamente.';
             elements.generateBtn.disabled = false;
         }
     }
@@ -151,43 +151,57 @@ async function showResults() {
     // Captura a imagem recortada do Cropper
     const finalImageData = getCroppedImageData();
 
-    // 1. Validar e mapear o rosto original LOCALMENTE
-    // No modo demo, ainda fazemos o mapeamento para simular o escaneamento facial
-    elements.statusMsg.innerText = 'Escaneando métricas faciais...';
+    if (window.isDemoMode) {
+        // MODO DEMO: Fluxo simplificado e infalível
+        elements.statusMsg.innerText = 'Iniciando demonstração do projeto...';
 
-    const img = new Image();
-    img.src = finalImageData;
-    await new Promise(r => img.onload = r);
+        // Mostrar a original (sample) imediatamente
+        elements.resultOriginal.src = finalImageData;
+        elements.resultOriginal.style.display = 'block';
 
-    // Detectar rosto com seus "landmarks" (pontos estruturais)
-    const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+        // Esperar um tempo para o usuário ler as mensagens de status
+        await new Promise(r => setTimeout(r, 6000));
 
-    if (!result) {
-        elements.statusMsg.innerText = 'Rosto não detectado no recorte. Por favor, ajuste o seletor.';
-        elements.generateBtn.disabled = false;
-        elements.scanLine.style.display = 'none';
-        throw new Error('FACE_NOT_DETECTED');
-    }
+        // Mostrar o resultado demo fixo
+        elements.resultAlgo.src = 'assets/sample.png';
+        elements.resultAlgo.style.display = 'block';
 
-    // Mostrar a imagem original imediatamente
-    elements.resultOriginal.src = finalImageData;
-    elements.resultOriginal.style.display = 'block';
-
-    // 2. Chamar a IA ou usar resultado estático se for demo
-    let editedImageData;
-    if (isDemoMode) {
-        // Simular um pequeno atraso de processamento se for demo para casar com as mensagens
-        await new Promise(r => setTimeout(r, 4000));
-        editedImageData = 'assets/sample.png';
+        // Esconder placeholders com força total
+        document.querySelectorAll('.img-placeholder').forEach(p => {
+            p.style.setProperty('display', 'none', 'important');
+        });
     } else {
-        editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
+        // MODO REAL: Processamento com IA
+        elements.statusMsg.innerText = 'Escaneando métricas faciais...';
+
+        const img = new Image();
+        img.src = finalImageData;
+        await new Promise(r => img.onload = r);
+
+        // Detectar rosto com seus "landmarks"
+        const result = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+
+        if (!result) {
+            elements.statusMsg.innerText = 'Rosto não detectado no recorte. Por favor, ajuste o seletor.';
+            elements.generateBtn.disabled = false;
+            elements.scanLine.style.display = 'none';
+            throw new Error('FACE_NOT_DETECTED');
+        }
+
+        // Mostrar a imagem original imediatamente
+        elements.resultOriginal.src = finalImageData;
+        elements.resultOriginal.style.display = 'block';
+
+        // Chamar a IA real
+        const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
+
+        // Mostrar resultado final gerado pela IA
+        elements.resultAlgo.src = editedImageData;
+        elements.resultAlgo.style.display = 'block';
+
+        // Esconder placeholders
+        document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'none');
     }
-
-    // Mostrar resultado final gerado pela IA
-    elements.resultAlgo.src = editedImageData;
-    elements.resultAlgo.style.display = 'block';
-
-    document.querySelectorAll('.img-placeholder').forEach(p => p.style.display = 'none');
 
     elements.generateBtn.style.display = 'none';
     elements.resultSection.scrollIntoView({ behavior: 'smooth' });
