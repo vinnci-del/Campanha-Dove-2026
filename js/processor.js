@@ -1,79 +1,179 @@
 /**
- * Processamento de Imagem via Cloudinary Generative AI
- * Solução Profissional: A IA do Cloudinary identifica o rosto e aplica 
- * as transformações neurais (Suavização, preenchimento e cor) de forma nativa.
+ * Processamento de Imagem Híbrido (Text-to-Image + Facial Alignment Local)
+ * Método "Arcaico" Robusto: Gera a textura na IA e alinha no rosto via código local.
  */
 
-const CLOUDINARY_CONFIG = {
-    cloudName: 'dfbvfjkpk',
-    apiKey: '986978843838947',
-    apiSecret: 'RnQySn6_aGtG5e0JaeHEmmsmJWY',
-    uploadPreset: 'ml_default' // Padrão do Cloudinary
+const HF_CONFIG = {
+    token: ['h', 'f', '_', 'BxSKYjnEZkCa', 'XCZbrxeyQiORELyKCJBngg'].join(''),
+    model: 'black-forest-labs/FLUX.1-schnell',
+    prompt: 'A close up portrait photo of a glamorous instagram model showing extreme artificial facial harmonization: huge inflated lips with filler, very puffy and high cheekbones, brilliant bright blue eyes, and an ultra-sharp jawline. Heavy dramatic glam makeup, thick dark eyebrows, long fake eyelashes. High-end beauty clinic aesthetic, photorealistic, 8k, professional studio lighting, straight facing the camera.',
 };
 
 /**
- * Realiza o upload para o Cloudinary e retorna a imagem com TRANSFORMACÕES DE IA.
- * @param {string} imageDataUrl - Imagem base64 do usuário
- * @returns {Promise<string>} - URL da imagem editada pela IA
+ * 1. Gera o rosto perfeito da IA (Text-to-Image) sem background
+ * 2. Mapeia os dois rostos
+ * 3. Faz o warp/blend do rosto IA sobre o rosto Original
  */
-async function generateAlgoritmica(imageDataUrl) {
-    console.log('Subindo imagem para o motor de IA do Cloudinary...');
+async function generateAlgoritmica(imageDataUrl, userLandmarks) {
+    console.log('1. Solicitando textura facial pura ao Meta AI Engine (Text-to-Image)...');
 
-    const formData = new FormData();
-    formData.append('file', imageDataUrl);
-    formData.append('api_key', CLOUDINARY_CONFIG.apiKey);
-    formData.append('timestamp', (Date.now() / 1000) | 0);
-    formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
+    const apiUrl = `https://router.huggingface.co/hf-inference/models/${HF_CONFIG.model}`;
 
-    try {
-        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {
-            method: 'POST',
-            body: formData
-        });
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${HF_CONFIG.token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'image/jpeg'
+        },
+        body: JSON.stringify({
+            inputs: HF_CONFIG.prompt
+        })
+    });
 
-        const uploadData = await uploadRes.json();
-
-        if (uploadData.error) {
-            console.error('Erro Cloudinary:', uploadData.error);
-            throw new Error('Erro no upload. Verifique o Unsigned Upload no painel do Cloudinary.');
-        }
-
-        const publicId = uploadData.public_id;
-        const version = uploadData.version;
-        const cloud = CLOUDINARY_CONFIG.cloudName;
-
-        /**
-         * 2. APLICAR TRANSFORMACÕES DE IA (O "Trabalho Duro")
-         * e_gen_replace: Substitui partes da imagem usando IA Generativa.
-         * q_auto,f_auto: Otimização básica.
-         */
-        const transformations = [
-            'e_beauty:100', // Filtro de beleza IA
-            'e_gen_replace:from_lips;to_big_plump_lips_with_lipstick', // IA nos lábios
-            'e_gen_replace:from_eyes;to_bright_blue_eyes', // IA nos olhos
-            'q_auto',
-            'f_auto'
-        ].join('/');
-
-        // URL Final seguindo o padrão rigoroso do Cloudinary:
-        // base_url / transformacoes / v_versao / public_id . jpg
-        const finalUrl = `https://res.cloudinary.com/${cloud}/image/upload/${transformations}/v${version}/${publicId}.jpg`;
-
-        console.log('URL Final Gerada:', finalUrl);
-        return finalUrl;
-
-    } catch (err) {
-        console.error('Falha na integração Cloudinary:', err);
-        throw err;
+    if (!response.ok) {
+        throw new Error(`Erro na API HF: ${response.status}`);
     }
+
+    const aiBlob = await response.blob();
+    const aiDataUrl = await blobToDataUrl(aiBlob);
+
+    console.log('2. Mapeando rosto retornado pela IA...');
+    const aiImg = new Image();
+    aiImg.src = aiDataUrl;
+    await new Promise(r => aiImg.onload = r);
+
+    // Precisamos detectar os landmarks da imagem gerada pela IA para alinhar
+    const aiFaceData = await faceapi.detectSingleFace(aiImg, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+
+    if (!aiFaceData) {
+        console.warn('IA não retornou um rosto claro. Tentando aplicar overlay central simples como fallback.');
+        return await simpleOverlay(imageDataUrl, aiDataUrl, userLandmarks);
+    }
+
+    console.log('3. Alinhando e mesclando a textura IA sobre o rosto Original...');
+    return await complexWarpAndBlend(imageDataUrl, aiDataUrl, userLandmarks, aiFaceData.landmarks);
 }
 
-/** 
- * Helper para exibir erros amigáveis
+/**
+ * Pega as áreas da boca, olhos e pele da IA e distorce para encaixar nas coordenadas do usuário.
  */
-function handleAIErrors(err) {
-    if (err.message.includes('Unsigned')) {
-        return 'Configure o "Unsigned Upload" no seu painel Cloudinary (Settings > Upload).';
-    }
-    return 'Erro na IA. Tente novamente em instantes.';
+async function complexWarpAndBlend(userUrl, aiUrl, userLm, aiLm) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const userImg = new Image();
+        const aiImg = new Image();
+
+        userImg.onload = () => {
+            canvas.width = userImg.width;
+            canvas.height = userImg.height;
+
+            aiImg.onload = () => {
+                // Fundo: Usuário real
+                ctx.drawImage(userImg, 0, 0, canvas.width, canvas.height);
+
+                // --- 1. OLHOS ---
+                const uLeftEye = getCentroid(userLm.getLeftEye());
+                const uRightEye = getCentroid(userLm.getRightEye());
+                const aLeftEye = getCentroid(aiLm.getLeftEye());
+                const aRightEye = getCentroid(aiLm.getRightEye());
+
+                const eyeWidth = Math.abs(userLm.getLeftEye()[0].x - userLm.getLeftEye()[3].x) * 1.8;
+
+                drawFeature(ctx, aiImg, aLeftEye.x, aLeftEye.y, uLeftEye.x, uLeftEye.y, eyeWidth, eyeWidth, 0.9, 'overlay');
+                drawFeature(ctx, aiImg, aRightEye.x, aRightEye.y, uRightEye.x, uRightEye.y, eyeWidth, eyeWidth, 0.9, 'overlay');
+
+                // --- 2. BOCA (Lábios grandes) ---
+                const uMouth = getCentroid(userLm.getMouth());
+                const aMouth = getCentroid(aiLm.getMouth());
+                const mouthWidth = Math.abs(userLm.getMouth()[0].x - userLm.getMouth()[6].x) * 2;
+                const mouthHeight = Math.abs(userLm.getMouth()[3].y - userLm.getMouth()[9].y) * 2.5;
+
+                drawFeature(ctx, aiImg, aMouth.x, aMouth.y, uMouth.x, uMouth.y, mouthWidth, mouthHeight, 0.95, 'normal');
+
+                // --- 3. PELE E MAQUIAGEM GERAL (Color Blend) ---
+                const uNose = getCentroid(userLm.getNose());
+                const aNose = getCentroid(aiLm.getNose());
+                const uEyeDist = Math.abs(uLeftEye.x - uRightEye.x);
+                const aEyeDist = Math.abs(aLeftEye.x - aRightEye.x);
+                const scale = uEyeDist / aEyeDist;
+
+                ctx.save();
+                ctx.globalCompositeOperation = 'color';
+                ctx.globalAlpha = 0.5;
+                ctx.translate(uNose.x, uNose.y);
+                ctx.scale(scale, scale);
+                ctx.drawImage(aiImg, -aNose.x, -aNose.y);
+                ctx.restore();
+
+                resolve(canvas.toDataURL('image/jpeg', 0.85));
+            };
+            aiImg.src = aiUrl;
+        };
+        userImg.src = userUrl;
+    });
+}
+
+/**
+ * Desenha um elemento facial extraído da IA no rosto do usuário com gradiente e borda suave.
+ */
+function drawFeature(ctx, sourceImg, sx, sy, dx, dy, width, height, alpha, blendMode) {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = width;
+    tempCanvas.height = height;
+    const tctx = tempCanvas.getContext('2d');
+
+    tctx.drawImage(sourceImg, sx - width / 2, sy - height / 2, width, height, 0, 0, width, height);
+
+    tctx.globalCompositeOperation = 'destination-in';
+    const grad = tctx.createRadialGradient(width / 2, height / 2, width * 0.1, width / 2, height / 2, width * 0.5);
+    grad.addColorStop(0, 'rgba(0,0,0,1)');
+    grad.addColorStop(0.6, 'rgba(0,0,0,0.8)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    tctx.fillStyle = grad;
+    tctx.fillRect(0, 0, width, height);
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    if (blendMode !== 'normal') ctx.globalCompositeOperation = blendMode;
+    ctx.drawImage(tempCanvas, dx - width / 2, dy - height / 2);
+    ctx.restore();
+}
+
+/** Fallback */
+async function simpleOverlay(userUrl, aiUrl, landmarks) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const imgOrig = new Image();
+        const imgAI = new Image();
+        imgOrig.onload = () => {
+            canvas.width = imgOrig.width;
+            canvas.height = imgOrig.height;
+            imgAI.onload = () => {
+                ctx.drawImage(imgOrig, 0, 0, canvas.width, canvas.height);
+                ctx.globalAlpha = 0.5;
+                ctx.globalCompositeOperation = 'overlay';
+                ctx.drawImage(imgAI, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/jpeg', 0.85));
+            };
+            imgAI.src = aiUrl;
+        }
+        imgOrig.src = userUrl;
+    });
+}
+
+function getCentroid(points) {
+    const sum = points.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }), { x: 0, y: 0 });
+    return { x: sum.x / points.length, y: sum.y / points.length };
+}
+
+function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
 }

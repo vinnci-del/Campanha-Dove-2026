@@ -142,7 +142,7 @@ async function showResults() {
     // Captura a imagem recortada do Cropper
     const finalImageData = getCroppedImageData();
 
-    // 1. Validar e mapear o rosto original LOCALMENTE (Essencial para o Hybrid Aligment)
+    // 1. Validar e mapear o rosto original LOCALMENTE
     elements.statusMsg.innerText = 'Escaneando métricas faciais...';
 
     const img = new Image();
@@ -159,12 +159,11 @@ async function showResults() {
         throw new Error('FACE_NOT_DETECTED');
     }
 
-    // Mostrar a imagem original imediatamente no card de comparação
+    // Mostrar a imagem original imediatamente
     elements.resultOriginal.src = finalImageData;
 
-    // 2. Chamar o motor de IA do Cloudinary (GenAI)
-    // Agora o Cloudinary detecta e edita os traços automaticamente
-    const editedImageData = await generateAlgoritmica(finalImageData);
+    // 2. Chamar a IA e usar o Mapeamento Facial Híbrido
+    const editedImageData = await generateAlgoritmica(finalImageData, result.landmarks);
 
     // Mostrar resultado final gerado pela IA
     elements.resultAlgo.src = editedImageData;
