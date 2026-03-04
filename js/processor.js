@@ -1,11 +1,11 @@
 /**
  * Processamento de Imagem via Hugging Face Inference API (Img2Img)
- * Usando o modelo FLUX.1-schnell para modificação real da imagem original.
+ * Usando Stable Diffusion XL Base 1.0 para EDIÇÃO real da foto original.
  */
 
 const HF_CONFIG = {
     token: ['h', 'f', '_', 'BxSKYjnEZkCa', 'XCZbrxeyQiORELyKCJBngg'].join(''),
-    model: 'black-forest-labs/FLUX.1-schnell',
+    model: 'stabilityai/stable-diffusion-xl-base-1.0',
     prompt: 'A portrait photo showing extreme artificial facial harmonization: huge inflated lips with filler, very puffy and high cheekbones, brilliant bright blue eyes, and an ultra-sharp jawline. Heavy dramatic "Instagram" glam makeup, thick dark eyebrows, long fake eyelashes. High-end beauty clinic aesthetic, photorealistic, 8k.',
 };
 
@@ -17,8 +17,9 @@ const HF_CONFIG = {
  * @returns {Promise<string>} - Data URL da imagem editada pela IA
  */
 async function generateAlgoritmica(imageDataUrl) {
-    console.log('Solicitando modificação real (Img2Img) ao Meta AI Engine...');
+    console.log('Solicitando edição real (Img2Img) ao Meta AI Engine...');
 
+    // Preparar a imagem (remover prefixo base64 para a API)
     const base64Image = imageDataUrl.split(',')[1];
     const apiUrl = `https://router.huggingface.co/hf-inference/models/${HF_CONFIG.model}`;
 
@@ -31,7 +32,11 @@ async function generateAlgoritmica(imageDataUrl) {
         },
         body: JSON.stringify({
             inputs: HF_CONFIG.prompt,
-            image: base64Image
+            parameters: {
+                image: base64Image,
+                strength: 0.6, // Força da mudança (mantém a base mas altera os traços)
+                guidance_scale: 7.5
+            }
         })
     });
 
