@@ -35,7 +35,7 @@ function setUploadedImage(data) {
     elements.uploadPrompt.style.display = 'none';
     elements.generateBtn.disabled = false;
     elements.resetBtn.style.display = 'inline-block';
-    elements.sampleBtn.style.display = 'none';
+    if (elements.sampleSection) elements.sampleSection.style.display = 'none';
 
     if (cropper) {
         cropper.destroy();
@@ -98,7 +98,7 @@ function resetApp() {
     elements.generateBtn.disabled = true;
     elements.generateBtn.style.display = 'inline-block';
     elements.resetBtn.style.display = 'none';
-    elements.sampleBtn.style.display = 'inline-block';
+    if (elements.sampleSection) elements.sampleSection.style.display = 'block';
 
     // Reset results and keep section visible for placeholders
     elements.resultAlgo.src = '';
@@ -139,7 +139,7 @@ function deleteData() {
     elements.generateBtn.disabled = true;
     elements.generateBtn.style.display = 'inline-block';
     elements.resetBtn.style.display = 'none';
-    elements.sampleBtn.style.display = 'inline-block';
+    if (elements.sampleSection) elements.sampleSection.style.display = 'block';
     elements.statusMsg.innerText = 'Todos os seus dados foram removidos.';
     elements.fileInput.value = '';
     setTimeout(() => { elements.statusMsg.innerText = ''; }, 3000);

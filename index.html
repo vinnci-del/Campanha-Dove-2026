@@ -139,12 +139,17 @@
                     style="min-height: 450px;">
                     <div id="upload-prompt"
                         class="upload-content d-flex flex-column align-items-center justify-content-center h-100 py-5">
-                        <div class="upload-icon mb-3" style="font-size: 3rem; color: var(--accent);">✦</div>
-                        <h4 class="fw-bold text-primary mb-2">Seja Bem-vinda</h4>
-                        <p class="text-muted px-4 text-center">Arraste uma foto ou clique para escolher sua imagem e
-                            iniciar a reflexão.</p>
-                        <span class="badge bg-light text-secondary rounded-pill px-3 py-2 mt-2">PNG ou JPG até
-                            10MB</span>
+                        <div class="upload-icon mb-4" style="font-size: 3.5rem; color: var(--accent);">
+                            <i data-lucide="image-plus"></i>
+                        </div>
+                        <h4 class="fw-bold text-primary mb-3">Sua Beleza Começa Aqui</h4>
+                        <p class="text-secondary px-4 text-center mb-4" style="max-width: 400px;">
+                            Clique neste espelho para selecionar sua foto ou arraste o arquivo diretamente para cá.
+                        </p>
+                        <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm pointer-events-none">
+                            <i data-lucide="upload" class="me-2" style="width: 18px;"></i>Selecionar Imagem
+                        </button>
+                        <span class="text-muted small mt-4 opacity-75">Formatos suportados: JPG e PNG</span>
                     </div>
 
                     <div id="preview-container" class="preview-container h-100 position-relative"
@@ -187,13 +192,25 @@
                     <input type="file" id="file-input" hidden accept="image/png,image/jpeg">
                 </div>
 
-                <div class="controls d-flex flex-column flex-sm-row gap-3 justify-content-center mb-5 mt-4">
-                    <button id="generate-btn" class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow-sm"
-                        disabled>ANALISAR REALIDADE IA</button>
-                    <button id="reset-btn" class="btn btn-outline-danger px-4 py-3 rounded-pill fw-semibold shadow-sm"
-                        style="display: none;">CANCELAR OPERAÇÃO</button>
-                    <button id="sample-btn"
-                        class="btn btn-outline-primary px-5 py-3 rounded-pill fw-semibold">EXPERIMENTAR DEMO</button>
+                <div class="controls text-center mb-5 mt-n3">
+                    <div id="main-actions" class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <button id="generate-btn" class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow-sm"
+                            style="min-width: 250px;" disabled>
+                            <i data-lucide="sparkles" class="me-2"></i>INICIAR ANÁLISE IA
+                        </button>
+                        <button id="reset-btn"
+                            class="btn btn-outline-danger px-4 py-3 rounded-pill fw-semibold shadow-sm"
+                            style="display: none;">RECOMECAR EXPERIMENTO</button>
+                    </div>
+
+                    <div id="sample-section" class="mt-4 pt-2">
+                        <p class="text-muted small mb-3">Caso não queira usar sua foto agora:</p>
+                        <button id="sample-btn"
+                            class="btn btn-outline-secondary px-5 py-2 rounded-pill fw-medium btn-sm opacity-75">
+                            <i data-lucide="play-circle" class="me-2" style="width: 16px;"></i>Assistir Demonstração
+                            (Demo)
+                        </button>
+                    </div>
                 </div>
 
                 <div id="status-msg" class="status-msg text-center text-primary fw-medium small text-uppercase"

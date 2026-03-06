@@ -7,6 +7,7 @@ const elements = {
     generateBtn: document.getElementById('generate-btn'),
     resetBtn: document.getElementById('reset-btn'),
     sampleBtn: document.getElementById('sample-btn'),
+    sampleSection: document.getElementById('sample-section'),
     scanLine: document.getElementById('scan-line'),
     statusMsg: document.getElementById('status-msg'),
     resultSection: document.getElementById('result-section'),

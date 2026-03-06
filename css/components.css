@@ -33,13 +33,21 @@
 
 /* Mirror Box (Upload Area) */
 .mirror-box {
-    border: 2px dashed rgba(0, 45, 98, 0.05) !important;
-    transition: var(--transition);
+    border: 2px dashed rgba(0, 45, 98, 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.mirror-box:hover {
+    background-color: rgba(0, 45, 98, 0.02) !important;
+    border-color: var(--primary) !important;
+    transform: scale(1.01);
 }
 
 .mirror-box.dragover {
-    background-color: rgba(0, 45, 98, 0.02) !important;
+    background-color: rgba(0, 45, 98, 0.05) !important;
     border-color: var(--primary) !important;
+    transform: scale(1.02);
 }
 
 .upload-icon {
