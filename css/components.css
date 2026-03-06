@@ -211,3 +211,23 @@
 .lucide {
     stroke-width: 1.5px;
 }
+
+/* Team Section */
+.team-section .card {
+    transition: var(--transition);
+    border: 1px solid rgba(0, 45, 98, 0.05) !important;
+}
+
+.team-section .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 45, 98, 0.08) !important;
+    border-color: rgba(0, 45, 98, 0.1) !important;
+}
+
+.bg-primary-subtle {
+    background-color: rgba(0, 45, 98, 0.05) !important;
+}
+
+.bg-accent-subtle {
+    background-color: rgba(179, 139, 77, 0.05) !important;
+}
