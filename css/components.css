@@ -176,7 +176,30 @@
 .nav-links a {
     transition: var(--transition);
     position: relative;
-    padding: 5px 0;
+    padding: 8px 0;
+}
+
+@media (max-width: 768px) {
+    .nav-links a {
+        padding: 6px 10px;
+        background-color: rgba(0, 45, 98, 0.02);
+        border-radius: 8px;
+        font-size: 0.7rem !important;
+    }
+
+    header {
+        padding: 1.5rem 0 !important;
+    }
+
+    .display-3 {
+        font-size: 2.2rem !important;
+        line-height: 1.2;
+    }
+
+    .lead {
+        font-size: 1rem !important;
+        line-height: 1.5;
+    }
 }
 
 .nav-links a::after {
