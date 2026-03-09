@@ -37,4 +37,5 @@ const elements = {
     btnRotateL: document.getElementById('crop-rotate-l'),
     btnRotateR: document.getElementById('crop-rotate-r'),
     btnCropReset: document.getElementById('crop-reset'),
+    backToTop: document.getElementById('back-to-top'),
 };
