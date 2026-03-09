@@ -3,11 +3,11 @@
 // Inicializa Ícones e Componentes do Bootstrap
 let bConsentModal = null;
 window.isDemoMode = false;
-if (window.lucide) {
-    lucide.createIcons();
-}
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) {
+        lucide.createIcons();
+    }
     if (elements.consentModal) {
         bConsentModal = new bootstrap.Modal(elements.consentModal);
     }
@@ -281,3 +281,21 @@ function showMain() {
 window.showData = showData;
 window.showMain = showMain;
 window.showPrivacy = showPrivacy;
+
+// ===== Back to Top Logic =====
+if (elements.backToTop) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            elements.backToTop.classList.add('show');
+        } else {
+            elements.backToTop.classList.remove('show');
+        }
+    });
+
+    elements.backToTop.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
